@@ -45,11 +45,10 @@ A full-featured, modern e-commerce bookstore built with Django, featuring PayPal
 
 ## 🎬 Video Demo 📺
 
-> **[ Watch the Full Demo Video Here](#)**
+> **[ Watch the Full Demo Video Here](#)** 👇
 >
 > [![Book Store Demo](https://github.com/dennismbugua/bookstore/blob/main/files/YT/Book%20Store.PNG?raw=true)](https://www.youtube.com/watch?v=4RjOXi8lB0g)
 > 
-> *Note: Replace this link with your actual video demo URL showcasing:*
 > - Product browsing and search functionality
 > - Adding items to cart and checkout process
 > - PayPal payment integration
@@ -286,5 +285,6 @@ SECURE_SSL_REDIRECT=True
 **⭐ If this project helped you, please give it a star on GitHub!**
 
 *Built with ❤️ for the book-loving community*
+
 
 
