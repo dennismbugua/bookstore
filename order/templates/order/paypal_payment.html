@@ -1,0 +1,104 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block container %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fab fa-paypal"></i>
+                        Complete Payment with PayPal
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Order Summary</h5>
+                            <div class="order-details">
+                                <p><strong>Order #:</strong> {{ order.id }}</p>
+                                <p><strong>Total Amount:</strong> ${{ order.payable }}</p>
+                                <p><strong>Items:</strong> {{ order.totalbook }} books</p>
+                                <p><strong>Customer:</strong> {{ order.name }}</p>
+                                <p><strong>Email:</strong> {{ order.email }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Payment Method</h5>
+                            <div class="payment-info">
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle"></i>
+                                    You will be redirected to PayPal to complete your payment securely.
+                                </div>
+                                
+                                <!-- Sandbox Testing Notice -->
+                                <div class="alert alert-warning">
+                                    <strong>Sandbox Testing:</strong><br>
+                                    <small>
+                                        • <strong>Seller Account:</strong> sb-nhayz3685308@business.example.com<br>
+                                        • <strong>For Payment:</strong> Use a different PayPal personal/buyer account<br>
+                                        • If you don't have a buyer account, create one at <a href="https://developer.paypal.com/developer/accounts/" target="_blank">PayPal Developer</a>
+                                    </small>
+                                </div>
+                                
+                                <div class="paypal-button-container text-center">
+                                    <form action="{{ paypal_action_url }}" method="post" target="_top">
+                                        {% for key, value in form_fields.items %}
+                                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                                        {% endfor %}
+                                        <input type="submit" value="Pay with PayPal" class="btn btn-primary btn-lg" style="background-color: #0070ba; border-color: #0070ba;">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{% url 'order:order_create' %}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Back to Checkout
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <small class="text-muted">
+                                <i class="fa fa-shield"></i>
+                                Secure payment powered by PayPal
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.paypal-button-container img {
+    max-width: 200px;
+    height: auto;
+}
+
+.order-details p {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-info {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+</style>
+{% endblock %}

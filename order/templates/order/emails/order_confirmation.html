@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Bookstore</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header .order-number {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .order-summary {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .order-summary h3 {
+            margin-top: 0;
+            color: #495057;
+            font-size: 18px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+        .order-items {
+            margin: 15px 0;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .item:last-child {
+            border-bottom: none;
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        .item-meta {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .item-price {
+            font-weight: 600;
+            color: #495057;
+            font-size: 16px;
+        }
+        .totals {
+            border-top: 2px solid #dee2e6;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .total-row.final {
+            font-weight: 700;
+            font-size: 18px;
+            color: #2c3e50;
+            border-top: 1px solid #dee2e6;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .customer-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .customer-info h3 {
+            margin-top: 0;
+            color: #495057;
+            font-size: 18px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .info-item {
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .success-badge {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 8px 0;
+            color: #6c757d;
+        }
+        .footer .company-name {
+            font-weight: 600;
+            color: #495057;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header, .content {
+                padding: 20px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>📚 Order Confirmed!</h1>
+            <div class="order-number">Order #{{ order.id }}</div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Hi {{ customer_name }},
+            </div>
+            
+            <p>Thank you for your purchase! We're excited to let you know that your order has been confirmed and payment has been successfully processed through PayPal.</p>
+            
+            <div class="success-badge">
+                ✅ Payment Successful - Your books are on their way!
+            </div>
+            
+            <div class="order-summary">
+                <h3>📦 Order Summary</h3>
+                
+                <div class="order-items">
+                    {% for item in order_items %}
+                    <div class="item">
+                        <div class="item-details">
+                            <div class="item-title">{{ item.book.name }}</div>
+                            <div class="item-meta">
+                                {% if item.book.writer %}by {{ item.book.writer }}{% endif %}
+                                • Quantity: {{ item.quantity }}
+                                • ${{ item.book.discountprice|floatformat:2 }} each
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            ${{ item.book.discountprice|floatformat:2 }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>${{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping:</span>
+                        <span>${{ shipping_cost|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total Paid:</span>
+                        <span>${{ total|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="customer-info">
+                <h3>🚚 Shipping Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Name</div>
+                        <div class="info-value">{{ order.name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ order.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">{{ order.phone }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Address</div>
+                        <div class="info-value">{{ order.address }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Country</div>
+                        <div class="info-value">{{ order.country }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Zip Code</div>
+                        <div class="info-value">{{ order.zip_code }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p><strong>What happens next?</strong></p>
+            <ul style="color: #495057; line-height: 1.8;">
+                <li>📋 Your order is being prepared for shipment</li>
+                <li>📧 You'll receive a shipping confirmation email with tracking details</li>
+                <li>🚚 Your books will be delivered to the address provided</li>
+                <li>💝 Enjoy your new books!</li>
+            </ul>
+            
+            <p>If you have any questions about your order, feel free to contact our customer support team. We're here to help!</p>
+        </div>
+        
+        <div class="footer">
+            <p class="company-name">📚 Bookstore</p>
+            <p>Thank you for choosing us for your reading needs!</p>
+            <p style="font-size: 12px; color: #adb5bd;">
+                This is an automated confirmation email. Please do not reply to this message.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

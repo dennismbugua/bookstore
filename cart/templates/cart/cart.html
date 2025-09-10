@@ -29,7 +29,7 @@
 					        </tbody>
 					    </table>
 						<div class="continue_or_next text-center">
-							<a href="{% url 'store:index' %}" class="btn _to_shope">Continue to Shope</a>
+							<a href="{% url 'store:index' %}" class="btn _to_shope">Continue Shopping</a>
 							<a href="{% url 'order:order_create' %}" class="btn _to_continue">Proceed to Checkout</a>
 						</div>
 					</div>
@@ -37,7 +37,33 @@
 				<div class="col-sm-4" id="abc">
 
 				</div>
-			</div> 
+			</div>
+
+			<!-- Beautiful Delete Confirmation Modal -->
+			<div id="deleteModal" class="custom-modal">
+				<div class="modal-overlay">
+					<div class="modal-container">
+						<div class="modal-header">
+							<div class="modal-icon">
+								<i class="fa fa-exclamation-triangle"></i>
+							</div>
+							<h3 class="modal-title">Confirm Removal</h3>
+						</div>
+						<div class="modal-body">
+							<p class="modal-message">Are you sure you want to remove <strong id="bookTitle"></strong> from your cart?</p>
+							<!-- <p class="modal-submessage">This action cannot be undone.</p> -->
+						</div>
+						<div class="modal-footer">
+							<button class="btn modal-btn-cancel" onclick="closeDeleteModal()">
+								<i class="fa fa-times"></i> Cancel
+							</button>
+							<button class="btn modal-btn-confirm" onclick="confirmDelete()">
+								<i class="fa fa-trash"></i> Remove Item
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 			{% endblock %}
 
 
@@ -46,8 +72,12 @@
 
 	$(document).ready(function(){
 		summary();
+		
+		// Enhanced cart functionality
+		initializeCartUpdates();
  
 	}); 
+	
 	function summary(){
 		$.ajax({
 			url : "summary",
@@ -57,21 +87,713 @@
 			}
 		})
 	}
-	function updateCartItem(obj,id){
+	
+	function updateCartItem(obj, id){
+		const quantity = parseInt(obj.value);
+		const $row = $(obj).closest('tr');
+		
+		// Add loading state
+		$row.addClass('updating');
+		$(obj).prop('disabled', true);
+		
 		$.ajax({
-			url: "update/"+id+"/"+obj.value,
+			url: "update/"+id+"/"+quantity,
 			type: "GET",
+			headers: {
+				'X-Requested-With': 'XMLHttpRequest'
+			},
 			data: {
 				bookid: id,
-				quantity: obj.value
+				quantity: quantity
 			},
-			success	:function(data){
-				$("#"+(id.toString())).html(data);
-				summary();
-				totalCart();
+			success: function(data){
+				if (data.status === 'success') {
+					// Update the price display
+					$("#"+(id.toString())).html(data.new_price + " $.");
+					
+					// Update cart summary
+					summary();
+					totalCart();
+					
+					// Show success feedback
+					showCartUpdateSuccess();
+				} else {
+					// Update with traditional method as fallback
+					$("#"+(id.toString())).html(data);
+					summary();
+					totalCart();
+				}
+				
+				// Remove loading state
+				$row.removeClass('updating');
+				$(obj).prop('disabled', false);
+			},
+			error: function() {
+				// Remove loading state and show error
+				$row.removeClass('updating');
+				$(obj).prop('disabled', false);
+				showCartUpdateError();
 			}
-		})
+		});
+	}
+	
+	function initializeCartUpdates() {
+		// Enhanced quantity input handling
+		$('.cart_quantity input[type="text"]').on('input', function() {
+			const $input = $(this);
+			const value = parseInt($input.val());
+			
+			// Validate quantity
+			if (value < 1 || value > 10) {
+				$input.addClass('invalid');
+				if (value < 1) $input.val(1);
+				if (value > 10) $input.val(10);
+			} else {
+				$input.removeClass('invalid');
+			}
+		});
+		
+		// Remove item confirmation
+		$('.btn-danger').on('click', function(e) {
+			e.preventDefault();
+			const $link = $(this);
+			const bookTitle = $link.closest('tr').find('td:nth-child(2)').text().trim();
+			
+			// Store reference for modal
+			window.currentDeleteLink = $link;
+			window.currentBookTitle = bookTitle;
+			
+			// Show beautiful modal
+			showDeleteModal(bookTitle);
+		});
+	}
+
+	// Modal functions
+	let currentDeleteLink = null;
+	let currentBookTitle = '';
+
+	function showDeleteModal(bookTitle) {
+		document.getElementById('bookTitle').textContent = bookTitle;
+		const modal = document.getElementById('deleteModal');
+		modal.style.display = 'flex';
+		
+		// Animate modal in
+		setTimeout(() => {
+			modal.classList.add('show');
+		}, 10);
+		
+		// Prevent body scroll
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeDeleteModal() {
+		const modal = document.getElementById('deleteModal');
+		modal.classList.remove('show');
+		
+		setTimeout(() => {
+			modal.style.display = 'none';
+			document.body.style.overflow = 'auto';
+		}, 300);
+	}
+
+	function confirmDelete() {
+		if (window.currentDeleteLink) {
+			const $link = window.currentDeleteLink;
+			const bookTitle = window.currentBookTitle;
+			
+			// Close modal first
+			closeDeleteModal();
+			
+			// Add loading state to the button
+			$link.html('<i class="fa fa-spinner fa-spin"></i>');
+			$link.prop('disabled', true);
+			$link.closest('tr').addClass('removing');
+			
+			// Add fade out effect to the row
+			const $row = $link.closest('tr');
+			$row.fadeOut(500, function() {
+				// Proceed with actual removal
+				window.location.href = $link.attr('href');
+			});
+			
+			// Show success notification
+			setTimeout(() => {
+				showDeleteNotification(bookTitle);
+			}, 200);
+		}
+	}
+
+	function showDeleteNotification(bookTitle) {
+		// Remove existing notifications
+		$('.delete-notification').remove();
+		
+		// Create beautiful notification
+		const notification = $(`
+			<div class="delete-notification">
+				<div class="notification-content">
+					<div class="notification-icon">
+						<i class="fa fa-check-circle"></i>
+					</div>
+					<div class="notification-text">
+						<div class="notification-title">Item Removed</div>
+						<div class="notification-message">"${bookTitle}" has been removed from your cart</div>
+					</div>
+					<button class="notification-close" onclick="$(this).closest('.delete-notification').remove()">
+						<i class="fa fa-times"></i>
+					</button>
+				</div>
+			</div>
+		`);
+		
+		// Add to page
+		$('body').append(notification);
+		
+		// Animate in
+		setTimeout(() => {
+			notification.addClass('show');
+		}, 100);
+		
+		// Auto remove after 5 seconds
+		setTimeout(() => {
+			notification.removeClass('show');
+			setTimeout(() => {
+				notification.remove();
+			}, 300);
+		}, 5000);
+	}
+
+	// Close modal when clicking outside
+	$(document).on('click', '.modal-overlay', function(e) {
+		if (e.target === this) {
+			closeDeleteModal();
+		}
+	});
+
+	// Close modal with ESC key
+	$(document).on('keydown', function(e) {
+		if (e.key === 'Escape') {
+			closeDeleteModal();
+		}
+	});
+	
+	function showCartUpdateSuccess() {
+		showCartMessage('Cart updated successfully!', 'success');
+	}
+	
+	function showCartUpdateError() {
+		showCartMessage('Failed to update cart. Please try again.', 'error');
+	}
+	
+	function showCartMessage(message, type) {
+		// Remove existing messages
+		$('.cart-message').remove();
+		
+		// Create message element
+		const $message = $(`
+			<div class="cart-message cart-message-${type}">
+				<i class="fa fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+				<span>${message}</span>
+			</div>
+		`);
+		
+		// Add to cart
+		$('.cart_info').prepend($message);
+		
+		// Auto remove after 3 seconds
+		setTimeout(() => {
+			$message.fadeOut(300, function() {
+				$(this).remove();
+			});
+		}, 3000);
+	}
+	
+	function totalCart(){
+		$.ajax({
+			url: "totalcart",
+			success: function(data){
+				$("#gettotalcart, #mobileCartCount").html(data);
+				
+				// Add animation to cart badge
+				$("#gettotalcart, #mobileCartCount").each(function() {
+					$(this).addClass('cart-updated');
+					setTimeout(() => {
+						$(this).removeClass('cart-updated');
+					}, 600);
+				});
+			}
+		});
 	}
 
 	</script>
+	
+	<style>
+		/* Enhanced Cart Styles */
+		.cart_info {
+			background: white;
+			border-radius: 15px;
+			padding: 30px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+			margin-bottom: 30px;
+		}
+		
+		.table {
+			margin-bottom: 30px;
+		}
+		
+		.table th {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			border: none;
+			padding: 15px;
+			font-weight: 600;
+			color: #495057;
+		}
+		
+		.table td {
+			padding: 20px 15px;
+			vertical-align: middle;
+			border-top: 1px solid #e9ecef;
+		}
+		
+		.cart_coverpage img {
+			width: 60px;
+			height: 80px;
+			object-fit: cover;
+			border-radius: 8px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+		}
+		
+		.cart_coverpage img:hover {
+			transform: scale(1.05);
+		}
+		
+		.cart_quantity input {
+			border: 2px solid #e9ecef;
+			border-radius: 8px;
+			text-align: center;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			padding: 8px;
+		}
+		
+		.cart_quantity input:focus {
+			border-color: #667eea;
+			box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+			outline: none;
+		}
+		
+		.cart_quantity input.invalid {
+			border-color: #dc3545;
+			box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+		}
+		
+		.btn-danger {
+			background: linear-gradient(45deg, #dc3545, #c82333);
+			border: none;
+			border-radius: 8px;
+			padding: 10px 15px;
+			transition: all 0.3s ease;
+		}
+		
+		.btn-danger:hover {
+			background: linear-gradient(45deg, #c82333, #a71e2a);
+			transform: translateY(-2px);
+			box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+		}
+		
+		.continue_or_next {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			border-radius: 15px;
+			padding: 30px;
+			border: 1px solid #dee2e6;
+		}
+		
+		._to_shope, ._to_continue {
+			background: linear-gradient(45deg, #667eea, #764ba2);
+			color: white;
+			border: none;
+			border-radius: 25px;
+			padding: 15px 30px;
+			font-weight: 600;
+			text-decoration: none;
+			margin: 0 10px;
+			transition: all 0.3s ease;
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		._to_shope:hover, ._to_continue:hover {
+			background: linear-gradient(45deg, #5a6fd8, #6c5ce7);
+			transform: translateY(-3px);
+			box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+			color: white;
+			text-decoration: none;
+		}
+		
+		._to_continue {
+			background: linear-gradient(45f, #28a745, #20c997);
+		}
+		
+		._to_continue:hover {
+			background: linear-gradient(45deg, #218838, #1e8e6e);
+		}
+		
+		/* Loading states */
+		tr.updating {
+			opacity: 0.6;
+			pointer-events: none;
+		}
+		
+		tr.updating td {
+			position: relative;
+		}
+		
+		tr.updating::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(255, 255, 255, 0.8);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 8px;
+		}
+		
+		/* Cart Messages */
+		.cart-message {
+			padding: 15px 20px;
+			border-radius: 10px;
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-weight: 500;
+			animation: slideIn 0.3s ease-out;
+		}
+		
+		.cart-message-success {
+			background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+			border-left: 4px solid #28a745;
+			color: #155724;
+		}
+		
+		.cart-message-error {
+			background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(200, 35, 51, 0.1) 100%);
+			border-left: 4px solid #dc3545;
+			color: #721c24;
+		}
+		
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		/* Responsive design */
+		@media (max-width: 768px) {
+			.cart_info {
+				padding: 20px 15px;
+			}
+			
+			.table-responsive {
+				border-radius: 10px;
+			}
+			
+			._to_shope, ._to_continue {
+				display: block;
+				margin: 10px 0;
+				text-align: center;
+			}
+		}
+
+		/* Beautiful Delete Modal Styles */
+		.custom-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			opacity: 0;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.custom-modal.show {
+			opacity: 1;
+		}
+
+		.modal-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			backdrop-filter: blur(5px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+		}
+
+		.modal-container {
+			background: white;
+			border-radius: 20px;
+			box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+			max-width: 500px;
+			width: 100%;
+			overflow: hidden;
+			transform: scale(0.8) translateY(50px);
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.custom-modal.show .modal-container {
+			transform: scale(1) translateY(0);
+		}
+
+		.modal-header {
+			background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+			color: white;
+			text-align: center;
+			padding: 30px 20px 20px;
+			position: relative;
+		}
+
+		.modal-icon {
+			width: 80px;
+			height: 80px;
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 20px;
+			backdrop-filter: blur(10px);
+			border: 2px solid rgba(255, 255, 255, 0.3);
+		}
+
+		.modal-icon i {
+			font-size: 2.5rem;
+			color: white;
+		}
+
+		.modal-title {
+			margin: 0;
+			font-size: 1.5rem;
+			font-weight: 700;
+		}
+
+		.modal-body {
+			padding: 30px;
+			text-align: center;
+		}
+
+		.modal-message {
+			font-size: 1.1rem;
+			color: #2c3e50;
+			margin-bottom: 15px;
+			line-height: 1.6;
+		}
+
+		.modal-submessage {
+			color: #6c757d;
+			font-size: 0.9rem;
+			margin: 0;
+		}
+
+		.modal-footer {
+			padding: 20px 30px 30px;
+			display: flex;
+			gap: 15px;
+			justify-content: center;
+		}
+
+		.modal-btn-cancel {
+			background: linear-gradient(45deg, #6c757d, #5a6268);
+			color: white;
+			border: none;
+			border-radius: 12px;
+			padding: 12px 25px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.modal-btn-cancel:hover {
+			background: linear-gradient(45deg, #5a6268, #495057);
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
+			color: white;
+		}
+
+		.modal-btn-confirm {
+			background: linear-gradient(45deg, #dc3545, #c82333);
+			color: white;
+			border: none;
+			border-radius: 12px;
+			padding: 12px 25px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.modal-btn-confirm:hover {
+			background: linear-gradient(45deg, #c82333, #a71e2a);
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+			color: white;
+		}
+
+		/* Beautiful Delete Notification */
+		.delete-notification {
+			position: fixed;
+			top: 30px;
+			right: 30px;
+			background: white;
+			border-radius: 15px;
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+			z-index: 10000;
+			overflow: hidden;
+			transform: translateX(400px);
+			opacity: 0;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			max-width: 400px;
+			border-left: 5px solid #28a745;
+		}
+
+		.delete-notification.show {
+			transform: translateX(0);
+			opacity: 1;
+		}
+
+		.notification-content {
+			display: flex;
+			align-items: center;
+			padding: 20px;
+			gap: 15px;
+		}
+
+		.notification-icon {
+			width: 50px;
+			height: 50px;
+			background: linear-gradient(135deg, #28a745, #20c997);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+		}
+
+		.notification-icon i {
+			color: white;
+			font-size: 1.5rem;
+		}
+
+		.notification-text {
+			flex: 1;
+		}
+
+		.notification-title {
+			font-weight: 700;
+			color: #2c3e50;
+			font-size: 1.1rem;
+			margin-bottom: 5px;
+		}
+
+		.notification-message {
+			color: #6c757d;
+			font-size: 0.9rem;
+			line-height: 1.4;
+		}
+
+		.notification-close {
+			background: none;
+			border: none;
+			color: #6c757d;
+			font-size: 1.2rem;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			padding: 5px;
+			border-radius: 50%;
+			width: 30px;
+			height: 30px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.notification-close:hover {
+			background: #f8f9fa;
+			color: #495057;
+		}
+
+		/* Removing row animation */
+		tr.removing {
+			background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(200, 35, 51, 0.1) 100%);
+			transform: translateX(-20px);
+			opacity: 0.7;
+		}
+
+		/* Responsive modal */
+		@media (max-width: 576px) {
+			.modal-container {
+				margin: 10px;
+				border-radius: 15px;
+			}
+
+			.modal-header {
+				padding: 25px 15px 15px;
+			}
+
+			.modal-icon {
+				width: 60px;
+				height: 60px;
+				margin-bottom: 15px;
+			}
+
+			.modal-icon i {
+				font-size: 2rem;
+			}
+
+			.modal-title {
+				font-size: 1.3rem;
+			}
+
+			.modal-body {
+				padding: 20px 15px;
+			}
+
+			.modal-footer {
+				padding: 15px;
+				flex-direction: column;
+			}
+
+			.modal-btn-cancel,
+			.modal-btn-confirm {
+				width: 100%;
+				justify-content: center;
+			}
+
+			.delete-notification {
+				top: 20px;
+				right: 20px;
+				left: 20px;
+				max-width: none;
+			}
+		}
+	</style>
 {% endblock %}

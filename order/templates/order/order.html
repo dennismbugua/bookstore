@@ -2,72 +2,2296 @@
 {% load static %}
 {% load customfunction %}
 {% load crispy_forms_tags %}
+{% load countries %}
+
+{% block head %}
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="address=no">
+<meta name="format-detection" content="email=no">
+{% endblock %}
 
 {% block container %}
-			<div class="row">
-			    <div class="col-md-8 order-md-1 cart_info">
-			        <h4 class="mb-3 mt-3">Shipping Address</h4>
+	<div class="enhanced-checkout-container">
+		<div class="checkout-header">
+			<div class="progress-indicator">
+				<div class="progress-step active" data-step="1">
+					<div class="step-circle">
+						<i class="fa fa-shopping-cart"></i>
+					</div>
+					<span class="step-label">Cart</span>
+				</div>
+				<div class="progress-line active"></div>
+				<div class="progress-step active current" data-step="2">
+					<div class="step-circle">
+						<i class="fa fa-credit-card"></i>
+					</div>
+					<span class="step-label">Checkout</span>
+				</div>
+				<div class="progress-line"></div>
+				<div class="progress-step" data-step="3">
+					<div class="step-circle">
+						<i class="fa fa-check"></i>
+					</div>
+					<span class="step-label">Complete</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row checkout-content">
+		    <div class="col-lg-8 order-lg-1">
+		        <div class="shipping-form-container">
+		        	<div class="form-header">
+		        		<div class="header-icon">
+		        			<i class="fa fa-truck"></i>
+		        		</div>
+		        		<div class="header-content">
+		        			<h3 class="form-title">Shipping Information</h3>
+		        			<!-- <p class="form-subtitle">Enter your details for delivery</p> -->
+		        		</div>
+		        	</div>
+
 					{% if messages %}
-					<div class="messages">
+					<div class="enhanced-messages">
 					    {% for message in messages %}
-					    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+					    <div class="message-item {{ message.tags }}" data-aos="fade-down">
+					    	<div class="message-icon">
+					    		<i class="fa fa-{% if message.tags == 'error' %}exclamation-triangle{% else %}check-circle{% endif %}"></i>
+					    	</div>
+					    	<span class="message-text">{{ message }}</span>
+					    	<button class="message-close" onclick="this.parentElement.remove()">
+					    		<i class="fa fa-times"></i>
+					    	</button>
+					    </div>
 					    {% endfor %}
 					</div>
 					{% endif %}
-			        <form action="" method="POST" class="needs-validation" novalidate="">
-			        	{% csrf_token %}
-			            <div class="row">
-			                <div class="col-md-6 mb-3">
-			                    {{ form.name|as_crispy_field }}
-			                </div>
-			                <div class="col-md-6 mb-3">
-			                  
-			                   	{{ form.email|as_crispy_field }}
-			                </div>
-			            </div>
-	           			<div class="mb-3">
-			                {{ form.phone|as_crispy_field }}
-			            </div>
 
-			            <div class="mb-3">
-			                {{ form.address|as_crispy_field }}
-			            </div>
-			            <div class="row">
-			                <div class="col-md-5 mb-3">
-								{{ form.division|as_crispy_field }}
-			                </div>
-			                <div class="col-md-4 mb-3">
-								{{ form.district|as_crispy_field }}
-			                </div>
-			                <div class="col-md-3 mb-3">
-			                	{{ form.zip_code|as_crispy_field }}
-			                </div>
-			            </div>
-			            <hr class="mb-4">
-			            <div class="d-block my-3">
-							{{ form.payment_method|as_crispy_field }}
-			            </div>
-			            <div class="row">
-			                <div class="col-md-6 mb-3">
-			                    {{ form.account_no|as_crispy_field }}
-			                  
-			                </div>
-			                <div class="col-md-6 mb-3">
-			                    {{ form.transaction_id|as_crispy_field }}
-			                </div>
-			            </div>
-			            <hr class="mb-4">
-			            <button class="btn btn-warning btn-block" type="submit" style="margin-bottom: 20px">Continue to checkout</button>
-			        </form>
-			    </div>
-			    <div class="col-md-4 order-md-2 mb-4">
-					<ul class="list-group">
-						<li class="list-group-item d-flex justify-content-between align-items-center"><h4>Checkout Summary</h4></li>
-						<li class="list-group-item d-flex justify-content-between align-items-center">Books<span>{{ cart|length }}</span></li>
-						<li class="list-group-item d-flex justify-content-between align-items-center">Subtotal<span>{{ cart.get_total_price }} $.</span></li>
-						<li class="list-group-item d-flex justify-content-between align-items-center">Shipping<span>{{ cost|shipping }} $.</span></li>
-						<li class="list-group-item d-flex justify-content-between align-items-center">Payable Total<span>{{ cart.get_total_price|payabletotal}} $.</span></li>
-					</ul>
-			    </div>
+		            <form action="" method="POST" class="enhanced-checkout-form" novalidate="" autocomplete="off">
+		            	{% csrf_token %}
+		            	
+		            	<!-- Personal Information Section -->
+		            	<div class="form-section" data-aos="fade-up" data-aos-delay="100">
+		            		<div class="section-header">
+		            			<h4 class="section-title">
+		            				<i class="fa fa-user"></i>
+		            				Personal Information
+		            			</h4>
+		            		</div>
+		            		<div class="section-content">
+			            		<div class="row">
+				                	<div class="col-md-6 mb-4">
+				                		<div class="enhanced-form-group">
+				                    		{{ form.name|as_crispy_field }}
+				                    	</div>
+				                	</div>
+				                	<div class="col-md-6 mb-4">
+				                		<div class="enhanced-form-group">
+				                   			{{ form.email|as_crispy_field }}
+				                   		</div>
+				                	</div>
+				            	</div>
+			           			<div class="mb-4">
+			           				<div class="enhanced-form-group">
+			                			{{ form.phone|as_crispy_field }}
+			                		</div>
+			            		</div>
+		            		</div>
+		            	</div>
+
+		            	<!-- Address Section -->
+		            	<div class="form-section" data-aos="fade-up" data-aos-delay="200">
+		            		<div class="section-header">
+		            			<h4 class="section-title">
+		            				<i class="fa fa-map-marker"></i>
+		            				Delivery Address
+		            			</h4>
+		            		</div>
+		            		<div class="section-content">
+			            		<div class="mb-4">
+			            			<div class="enhanced-form-group">
+			                			{{ form.address|as_crispy_field }}
+			                		</div>
+			            		</div>
+			            		<div class="row">
+				                	<div class="col-md-6 mb-4">
+				                		<div class="enhanced-form-group">
+				                			{{ form.country|as_crispy_field }}
+				                		</div>
+				                	</div>
+				                	<div class="col-md-6 mb-4">
+				                		<div class="enhanced-form-group">
+			                				{{ form.zip_code|as_crispy_field }}
+			                			</div>
+				                	</div>
+				            	</div>
+		            		</div>
+		            	</div>
+
+		            	<!-- Payment Section -->
+		            	<div class="form-section" data-aos="fade-up" data-aos-delay="300">
+		            		<div class="section-header">
+		            			<h4 class="section-title">
+		            				<i class="fa fa-credit-card"></i>
+		            				Payment Information
+		            			</h4>
+		            		</div>
+		            		<div class="section-content">
+			            		<div class="payment-methods-container mb-4">
+									<div class="enhanced-form-group">
+										{{ form.payment_method|as_crispy_field }}
+									</div>
+			            		</div>
+			            		
+			            		<!-- Card Payment Fields -->
+			            		<div class="payment-fields card-payment-fields" style="display: none;">
+			            			<div class="payment-method-header">
+			            				<i class="fa fa-credit-card"></i>
+			            				<span>Card Payment Details</span>
+			            			</div>
+			            			<div class="row">
+				                		<div class="col-md-6 mb-4">
+				                			<div class="enhanced-form-group">
+				                				<label for="card_number">Card Number *</label>
+				                				<input type="text" id="card_number" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="off" data-form-type="other" data-payment-disabled="true" x-autocompletetype="off">
+				                			</div>
+				                		</div>
+				                		<div class="col-md-3 mb-4">
+				                			<div class="enhanced-form-group">
+				                				<label for="card_expiry">Expiry Date *</label>
+				                				<input type="text" id="card_expiry" name="card_expiry" class="form-control" placeholder="MM/YY" maxlength="5" autocomplete="off" data-form-type="other" data-payment-disabled="true" x-autocompletetype="off">
+				                			</div>
+				                		</div>
+				                		<div class="col-md-3 mb-4">
+				                			<div class="enhanced-form-group">
+				                				<label for="card_cvv">CVV *</label>
+				                				<input type="text" id="card_cvv" name="card_cvv" class="form-control" placeholder="123" maxlength="4" autocomplete="off" data-form-type="other" data-payment-disabled="true" x-autocompletetype="off">
+				                			</div>
+				                		</div>
+				                	</div>
+				                	<div class="mb-4">
+				                		<div class="enhanced-form-group">
+				                			<label for="card_holder_name">Cardholder Name *</label>
+				                			<input type="text" id="card_holder_name" name="card_holder_name" class="form-control" placeholder="John Doe" autocomplete="off" data-form-type="other" data-payment-disabled="true" x-autocompletetype="off">
+				                		</div>
+				                	</div>
+			            		</div>
+			            		
+			            		<!-- PayPal Payment Fields -->
+			            		<div class="payment-fields paypal-payment-fields" style="display: none;">
+			            			<div class="paypal-payment-container">
+			            				<div class="paypal-header">
+			            					<div class="paypal-logo">
+			            						<i class="fa fa-paypal"></i>
+			            						<span>PayPal</span>
+			            					</div>
+			            					<div class="paypal-tagline">
+			            						The safer, easier way to pay
+			            					</div>
+			            				</div>
+			            				
+			            				<div class="paypal-benefits">
+			            					<div class="benefit-item">
+			            						<i class="fa fa-shield"></i>
+			            						<span>Buyer Protection</span>
+			            					</div>
+			            					<div class="benefit-item">
+			            						<i class="fa fa-lock"></i>
+			            						<span>Secure Encryption</span>
+			            					</div>
+			            					<div class="benefit-item">
+			            						<i class="fa fa-credit-card"></i>
+			            						<span>Multiple Payment Options</span>
+			            					</div>
+			            				</div>
+			            				
+			            				<div class="paypal-instructions">
+			            					<h6><i class="fa fa-info-circle"></i> How it works:</h6>
+			            					<ol class="paypal-steps">
+			            						<li>Click "Pay with PayPal" below</li>
+			            						<li>You'll be redirected to PayPal's secure site</li>
+			            						<li>Log in to your PayPal account or pay as guest</li>
+			            						<li>Complete your payment and return here</li>
+			            					</ol>
+			            				</div>
+			            				
+			            				<div class="paypal-payment-breakdown">
+			            					<h6><i class="fa fa-calculator"></i> Payment Summary:</h6>
+			            					<div class="breakdown-items">
+			            						<div class="breakdown-item">
+			            							<span class="breakdown-label">Subtotal:</span>
+			            							<span class="breakdown-value">${{ cart.get_total_price }}</span>
+			            						</div>
+			            						<div class="breakdown-item">
+			            							<span class="breakdown-label">Shipping:</span>
+			            							<span class="breakdown-value">${{ cart.get_total_price|shipping }}</span>
+			            						</div>
+			            						<div class="breakdown-item breakdown-total">
+			            							<span class="breakdown-label">Total:</span>
+			            							<span class="breakdown-value">${{ cart.get_total_price|payabletotal }}</span>
+			            						</div>
+			            					</div>
+			            				</div>
+			            				
+			            				<div class="paypal-button-wrapper">
+			            					<button type="button" class="paypal-pay-btn enhanced-paypal-btn">
+			            						<div class="btn-content">
+			            							<i class="fa fa-paypal"></i>
+			            							<span>Pay with PayPal</span>
+			            						</div>
+			            						<div class="btn-security">
+			            							<i class="fa fa-shield"></i>
+			            							<small>Secure Payment</small>
+			            						</div>
+			            					</button>
+			            					
+			            					<div class="paypal-footer-info">
+			            						<div class="security-badge">
+			            							<i class="fa fa-lock"></i>
+			            							<small>256-bit SSL encrypted</small>
+			            						</div>
+			            						<div class="sandbox-notice">
+			            							<i class="fa fa-flask"></i>
+			            							<small>Sandbox Environment</small>
+			            						</div>
+			            					</div>
+			            				</div>
+			            			</div>
+			            		</div>
+			            		
+			            		<!-- Hidden fields for form submission -->
+			            		<div style="display: none;">
+			            			{{ form.account_no }}
+			            			{{ form.transaction_id }}
+			            		</div>
+		            		</div>
+		            	</div>
+
+		            	<!-- Submit Button -->
+		            	<div class="form-actions" data-aos="fade-up" data-aos-delay="400">
+		            		<!-- <button class="enhanced-submit-btn" type="submit">
+		            			<span class="btn-content">
+		            				<i class="fa fa-lock"></i>
+		            				<span class="btn-text">Complete Secure Checkout</span>
+		            			</span>
+		            			<div class="btn-ripple"></div>
+		            		</button> -->
+		            		<div class="security-info">
+		            			<i class="fa fa-shield"></i>
+		            			<span>Your payment information is secure and encrypted</span>
+		            		</div>
+		            	</div>
+		            </form>
+		        </div>
+		    </div>
+
+		    <!-- Order Summary -->
+		    <div class="col-lg-4 order-lg-2">
+		        <div class="order-summary-container" data-aos="fade-left" data-aos-delay="200">
+		        	<div class="summary-header">
+		        		<div class="header-icon">
+		        			<i class="fa fa-file-text"></i>
+		        		</div>
+		        		<h4 class="summary-title">Order Summary</h4>
+		        	</div>
+
+		        	<div class="summary-content">
+		        		<div class="summary-item">
+		        			<span class="item-label">
+		        				<i class="fa fa-book"></i>
+		        				Books
+		        			</span>
+		        			<span class="item-value">{{ cart|length }}</span>
+		        		</div>
+
+		        		<div class="summary-item">
+		        			<span class="item-label">Subtotal</span>
+		        			<span class="item-value">${{ cart.get_total_price }}</span>
+		        		</div>
+
+		        		<div class="summary-item">
+		        			<span class="item-label">
+		        				<i class="fa fa-truck"></i>
+		        				Shipping
+		        			</span>
+		        			<span class="item-value">${{ cost|shipping }}</span>
+		        		</div>
+
+		        		<div class="summary-divider"></div>
+
+		        		<div class="summary-item total-item">
+		        			<span class="item-label">Total Payable</span>
+		        			<span class="item-value total-amount">${{ cart.get_total_price|payabletotal}}</span>
+		        		</div>
+		        	</div>
+
+		        	<div class="summary-footer">
+		        		<div class="guarantee-badge">
+		        			<i class="fa fa-medal"></i>
+		        			<div class="badge-content">
+		        				<span class="badge-title">Money Back Guarantee</span>
+		        				<span class="badge-subtitle">100% Secure Checkout</span>
+		        			</div>
+		        		</div>
+		        	</div>
+		        </div>
+		    </div>
+		</div>
+	</div>
+
+	<!-- PayPal Payment Modal -->
+	<div class="modal fade" id="paypalModal" tabindex="-1" role="dialog" aria-labelledby="paypalModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title" id="paypalModalLabel">
+						<i class="fab fa-paypal"></i>
+						PayPal Sandbox Payment
+					</h5>
+					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body p-0">
+					<div class="paypal-loading text-center py-5" id="paypalLoading">
+						<div class="spinner-border text-primary" role="status">
+							<span class="sr-only">Loading PayPal...</span>
+						</div>
+						<p class="mt-3">Connecting to PayPal Sandbox...</p>
+						<small class="text-muted">Preparing secure payment portal...</small>
+					</div>
+					<iframe id="paypalFrame" 
+							src="" 
+							frameborder="0" 
+							style="width: 100%; height: 600px; display: none;"
+							allow="payment">
+					</iframe>
+					<div class="paypal-instructions p-3 bg-light border-top" id="paypalInstructions" style="display: none;">
+						<div class="row">
+							<div class="col-md-8">
+								<div class="alert alert-info mb-2">
+									<i class="fa fa-info-circle"></i>
+									<strong>PayPal Sandbox Mode</strong><br>
+									<small>Use test credentials to complete payment. If the frame doesn't load, use the "Open in New Window" option.</small>
+								</div>
+								<div class="payment-status">
+									<p class="mb-1"><strong>Order Amount:</strong> $<span id="modalOrderAmount"></span></p>
+									<p class="mb-0"><strong>Status:</strong> <span id="paymentStatus" class="badge badge-warning">Waiting for payment...</span></p>
+								</div>
+							</div>
+							<div class="col-md-4 text-right">
+								<button type="button" class="btn btn-outline-primary btn-sm mb-2" id="openPayPalWindow">
+									<i class="fa fa-external-link-alt"></i> Open in New Window
+								</button>
+								<br>
+								<button type="button" class="btn btn-success btn-sm" id="checkPaymentStatus">
+									<i class="fa fa-refresh"></i> Check Status
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row w-100 align-items-center">
+						<div class="col-md-6">
+							<small class="text-muted">
+								<i class="fa fa-shield"></i>
+								Payment secured by PayPal Sandbox
+							</small>
+						</div>
+						<div class="col-md-6 text-right">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">
+								<i class="fa fa-times"></i> Cancel Payment
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
-		{% endblock %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Disable autocomplete on all form inputs
+    $('input, select, textarea').attr('autocomplete', 'off');
+    
+    // Also disable browser's autofill suggestions
+    $('input[type="email"]').attr('autocomplete', 'new-email');
+    $('input[type="tel"], input[name="phone"]').attr('autocomplete', 'new-tel');
+    $('input[name="name"]').attr('autocomplete', 'new-name');
+    $('input[name="address"]').attr('autocomplete', 'new-address');
+    
+    // Completely disable payment method suggestions and autofill for card fields
+    $('#card_number, #card_expiry, #card_cvv, #card_holder_name').each(function() {
+        $(this).attr({
+            'autocomplete': 'off',
+            'data-form-type': 'other',
+            'data-payment-disabled': 'true',
+            'x-autocompletetype': 'off',
+            'autocompletetype': 'off',
+            'role': 'textbox',
+            'aria-autocomplete': 'none'
+        });
+    });
+    
+    // Disable form autocomplete at form level
+    $('.enhanced-checkout-form').attr('autocomplete', 'off');
+    
+    // Real-time form validation feedback
+    $('.enhanced-form-group input, .enhanced-form-group select, .enhanced-form-group textarea').on('blur', function() {
+        const $field = $(this);
+        const $group = $field.closest('.enhanced-form-group');
+        
+        if ($field.val().trim() !== '') {
+            $group.addClass('filled');
+        } else {
+            $group.removeClass('filled');
+        }
+        
+        // Basic validation feedback
+        if ($field[0].checkValidity()) {
+            $group.addClass('valid').removeClass('invalid');
+        } else {
+            $group.addClass('invalid').removeClass('valid');
+        }
+    });
+    
+    // Auto-fill progress as user completes sections
+    function updateProgress() {
+        let completedSections = 0;
+        $('.form-section').each(function() {
+            const $section = $(this);
+            const $inputs = $section.find('input, select, textarea');
+            let filledInputs = 0;
+            
+            $inputs.each(function() {
+                if ($(this).val().trim() !== '') {
+                    filledInputs++;
+                }
+            });
+            
+            if (filledInputs === $inputs.length) {
+                completedSections++;
+                $section.addClass('completed');
+            } else {
+                $section.removeClass('completed');
+            }
+        });
+        
+        // Update progress indicator
+        const progressPercentage = (completedSections / 3) * 100;
+        $('.checkout-progress').css('width', progressPercentage + '%');
+    }
+    
+    // Monitor form changes
+    $('.enhanced-checkout-form input, .enhanced-checkout-form select, .enhanced-checkout-form textarea').on('input change', updateProgress);
+    
+    // Enhanced Country dropdown with flags - Simple and clean behavior
+    $('#id_country').on('change', function() {
+        const $select = $(this);
+        const $group = $select.closest('.enhanced-form-group');
+        const selectedCountry = $select.val();
+        const selectedOption = $select.find('option:selected');
+        const selectedText = selectedOption.text();
+        
+        // Add visual feedback for selection - keep it simple
+        if (selectedCountry && selectedCountry !== '') {
+            $group.addClass('filled');
+            $select.addClass('country-selected');
+            
+            // Update validation state
+            $group.addClass('valid').removeClass('invalid');
+            
+            // Simple country feedback
+            showCountryFeedback(selectedCountry, selectedText);
+        } else {
+            $group.removeClass('filled');
+            $select.removeClass('country-selected');
+            $group.removeClass('valid').addClass('invalid');
+        }
+    });
+    
+    // Initialize country dropdown on page load - simple setup
+    setTimeout(function() {
+        const $countrySelect = $('#id_country');
+        
+        if ($countrySelect.length > 0) {
+            // Add simple flag display to options
+            addSimpleFlagsToOptions();
+            
+            // Set Kenya as default if no selection
+            if (!$countrySelect.val() || $countrySelect.val() === '') {
+                $countrySelect.val('KE');
+                $countrySelect.trigger('change');
+            }
+        }
+    }, 100);
+    
+    // Function to add flags to options in a simple way
+    function addSimpleFlagsToOptions() {
+        const countryFlags = {
+            'KE': '🇰🇪', 'UG': '🇺🇬', 'TZ': '🇹🇿', 'RW': '🇷🇼', 'BI': '🇧🇮',
+            'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'DE': '🇩🇪',
+            'FR': '🇫🇷', 'ES': '🇪🇸', 'IT': '🇮🇹', 'NL': '🇳🇱', 'SE': '🇸🇪',
+            'NO': '🇳🇴', 'DK': '🇩🇰', 'FI': '🇫🇮', 'CH': '🇨🇭', 'AT': '🇦🇹',
+            'BE': '🇧🇪', 'IE': '🇮🇪', 'PT': '🇵🇹', 'GR': '🇬🇷', 'PL': '🇵🇱',
+            'CZ': '🇨🇿', 'HU': '🇭🇺', 'SK': '🇸🇰', 'SI': '🇸🇮', 'HR': '🇭🇷',
+            'BG': '🇧🇬', 'RO': '🇷🇴', 'LT': '🇱🇹', 'LV': '🇱🇻', 'EE': '🇪🇪',
+            'ZA': '🇿🇦', 'NG': '🇳🇬', 'EG': '🇪🇬', 'MA': '🇲🇦', 'GH': '🇬🇭',
+            'JP': '🇯🇵', 'CN': '🇨🇳', 'IN': '🇮🇳', 'KR': '🇰🇷', 'TH': '🇹🇭',
+            'VN': '🇻🇳', 'SG': '🇸🇬', 'MY': '🇲🇾', 'ID': '🇮🇩', 'PH': '🇵🇭',
+            'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴',
+            'PE': '🇵🇪', 'VE': '🇻🇪', 'EC': '🇪🇨', 'BO': '🇧🇴', 'PY': '🇵🇾'
+        };
+        
+        // Add flags to country options - simple approach
+        $('#id_country option').each(function() {
+            const $option = $(this);
+            const countryCode = $option.val();
+            const countryName = $option.text();
+            
+            // Skip empty option
+            if (!countryCode || countryCode === '') {
+                return;
+            }
+            
+            // Add flag if we have one for this country
+            if (countryFlags[countryCode]) {
+                const flag = countryFlags[countryCode];
+                // Only add flag if it's not already there
+                if (!countryName.includes(flag)) {
+                    $option.text(flag + ' ' + countryName);
+                }
+            }
+        });
+    }
+    
+    // Payment Method Handling
+    $('input[name="payment_method"]').on('change', function() {
+        const selectedMethod = $(this).val();
+        showPaymentFields(selectedMethod);
+    });
+    
+    // Function to show appropriate payment fields
+    function showPaymentFields(method) {
+        // Hide all payment fields first
+        $('.payment-fields').hide();
+        
+        // Show the appropriate fields based on method
+        if (method === 'Card Payment') {
+            $('.card-payment-fields').show();
+            setupCardFormatting();
+        } else if (method === 'PayPal') {
+            $('.paypal-payment-fields').show();
+            setupPayPalHandling();
+        }
+        
+        // Add visual feedback
+        const $paymentSection = $('.payment-methods-container').closest('.section-content');
+        $paymentSection.addClass('payment-method-selected');
+        
+        // Add method-specific styling
+        $paymentSection.removeClass('card-payment paypal-payment')
+                      .addClass(method.toLowerCase().replace(' ', '-') + '-payment');
+    }
+    
+    // Card formatting and validation
+    function setupCardFormatting() {
+        // Card number formatting
+        $('#card_number').off('input.cardFormat').on('input.cardFormat', function() {
+            let value = $(this).val().replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            if (value.length <= 16) {
+                $(this).val(formattedValue);
+            }
+        });
+        
+        // Expiry date formatting
+        $('#card_expiry').off('input.expiryFormat').on('input.expiryFormat', function() {
+            let value = $(this).val().replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            $(this).val(value);
+        });
+        
+        // CVV validation
+        $('#card_cvv').off('input.cvvFormat').on('input.cvvFormat', function() {
+            let value = $(this).val().replace(/[^0-9]/gi, '');
+            $(this).val(value);
+        });
+    }
+    
+    // PayPal handling
+    function setupPayPalHandling() {
+        $('.paypal-pay-btn').off('click.paypal').on('click.paypal', function() {
+            // Start PayPal payment process immediately
+            $(this).find('span').text('Redirecting to PayPal...');
+            $(this).prop('disabled', true);
+            
+            // Create PayPal payment order and redirect directly
+            createPayPalOrderAndRedirect();
+        });
+    }
+    
+    // Create PayPal order and redirect directly to PayPal
+    function createPayPalOrderAndRedirect() {
+        const formData = new FormData($('.enhanced-checkout-form')[0]);
+        
+        $.ajax({
+            url: '{% url "order:create_paypal_payment" %}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    // Redirect directly to PayPal payment page
+                    window.location.href = response.payment_url;
+                } else {
+                    alert('Error creating PayPal payment: ' + response.error);
+                    resetPayPalButton();
+                }
+            },
+            error: function() {
+                alert('Error connecting to server. Please try again.');
+                resetPayPalButton();
+            }
+        });
+    }
+    
+    // Reset PayPal button state
+    function resetPayPalButton() {
+        $('.paypal-pay-btn').find('span').text('Pay with PayPal');
+        $('.paypal-pay-btn').prop('disabled', false);
+    }
+    
+    // Start periodic payment status checking
+    let paymentCheckInterval;
+    function startPaymentStatusCheck(orderId) {
+        // Clear any existing interval
+        if (paymentCheckInterval) {
+            clearInterval(paymentCheckInterval);
+        }
+        
+        // Check every 5 seconds
+        paymentCheckInterval = setInterval(() => {
+            checkPaymentStatusSilent(orderId);
+        }, 5000);
+    }
+    
+    // Silent payment status check (no alerts)
+    function checkPaymentStatusSilent(orderId) {
+        $.ajax({
+            url: '{% url "order:check_payment_status" 0 %}'.replace('0', orderId),
+            type: 'GET',
+            success: function(response) {
+                if (response.paid) {
+                    // Payment successful
+                    clearInterval(paymentCheckInterval);
+                    $('#paymentStatus').removeClass('badge-warning').addClass('badge-success').text('Payment Completed!');
+                    
+                    // Show success message and redirect
+                    setTimeout(() => {
+                        $('#paypalModal').modal('hide');
+                        window.location.href = '{% url "order:paypal_success" 0 %}'.replace('0', orderId);
+                    }, 2000);
+                }
+            },
+            error: function() {
+                // Silently handle errors in background checks
+                console.log('Payment status check failed');
+            }
+        });
+    }
+    
+    // Reset PayPal button state
+    function resetPayPalButton() {
+        $('.paypal-pay-btn').find('span').text('Pay with PayPal');
+        $('.paypal-pay-btn').prop('disabled', false);
+    }
+    
+
+    
+    // Form submission handling
+    $('.enhanced-checkout-form').off('submit.payment').on('submit.payment', function(e) {
+        const selectedMethod = $('input[name="payment_method"]:checked').val();
+        
+        if (selectedMethod === 'Card Payment') {
+            // Validate card fields
+            const cardNumber = $('#card_number').val().replace(/\s/g, '');
+            const cardExpiry = $('#card_expiry').val();
+            const cardCvv = $('#card_cvv').val();
+            const cardName = $('#card_holder_name').val();
+            
+            if (!cardNumber || cardNumber.length < 16) {
+                e.preventDefault();
+                alert('Please enter a valid card number');
+                $('#card_number').focus();
+                return false;
+            }
+            
+            if (!cardExpiry || cardExpiry.length < 5) {
+                e.preventDefault();
+                alert('Please enter a valid expiry date');
+                $('#card_expiry').focus();
+                return false;
+            }
+            
+            if (!cardCvv || cardCvv.length < 3) {
+                e.preventDefault();
+                alert('Please enter a valid CVV');
+                $('#card_cvv').focus();
+                return false;
+            }
+            
+            if (!cardName.trim()) {
+                e.preventDefault();
+                alert('Please enter the cardholder name');
+                $('#card_holder_name').focus();
+                return false;
+            }
+            
+            // Copy card data to hidden fields
+            $('#id_account_no').val(cardNumber);
+            $('#id_transaction_id').val(cardCvv);
+            
+        } else if (selectedMethod === 'PayPal') {
+            // For PayPal, prevent normal form submission
+            e.preventDefault();
+            alert('Please use the "Pay with PayPal" button to complete your payment.');
+            return false;
+        }
+        
+        // Continue with original form submission logic
+        const $form = $(this);
+        const $submitBtn = $('.enhanced-submit-btn');
+        const $btnText = $submitBtn.find('.btn-text');
+        
+        // Add loading state
+        $submitBtn.addClass('loading');
+        $btnText.text('Processing...');
+        $submitBtn.prop('disabled', true);
+        
+        // Add spinner
+        $submitBtn.find('.btn-content').append('<div class="loading-spinner"></div>');
+    });
+    
+    // Initialize payment method on page load
+    setTimeout(function() {
+        const selectedMethod = $('input[name="payment_method"]:checked').val();
+        if (selectedMethod) {
+            showPaymentFields(selectedMethod);
+        }
+    }, 100);
+    
+    // Enhanced country feedback with flag (updated for django-countries)
+    function showCountryFeedback(countryCode, countryName) {
+        // Remove any existing feedback
+        $('.country-feedback').remove();
+        
+        // Get flag emoji for the country
+        const countryFlags = {
+            'AF': '��', 'AL': '��', 'DZ': '�🇿', 'AS': '��', 'AD': '��', 'AO': '��', 'AI': '��', 'AQ': '🇶', 'AG': '🇦�', 'AR': '��',
+            'AM': '��', 'AW': '��', 'AU': '��', 'AT': '��', 'AZ': '��', 'BS': '��', 'BH': '🇧�', 'BD': '��', 'BB': '��', 'BY': '��',
+            'BE': '��', 'BZ': '��', 'BJ': '��', 'BM': '��', 'BT': '🇧🇹', 'BO': '�🇴', 'BA': '🇧🇦', 'BW': '🇧🇼', 'BR': '🇧🇷', 'BN': '🇧🇳',
+            'BG': '🇧🇬', 'BF': '🇧🇫', 'BI': '🇧🇮', 'KH': '🇰🇭', 'CM': '🇨🇲', 'CA': '🇨🇦', 'CV': '🇨🇻', 'KY': '🇰🇾', 'CF': '🇨🇫', 'TD': '🇹🇩',
+            'CL': '🇨🇱', 'CN': '🇨🇳', 'CO': '🇨🇴', 'KM': '🇰🇲', 'CG': '🇨🇬', 'CD': '🇨🇩', 'CK': '🇨🇰', 'CR': '🇨🇷', 'CI': '🇨🇮', 'HR': '🇭🇷',
+            'CU': '🇨🇺', 'CY': '🇨🇾', 'CZ': '🇨🇿', 'DK': '🇩🇰', 'DJ': '🇩🇯', 'DM': '🇩🇲', 'DO': '🇩🇴', 'EC': '🇪🇨', 'EG': '🇪🇬', 'SV': '🇸🇻',
+            'GQ': '🇬🇶', 'ER': '🇪🇷', 'EE': '🇪🇪', 'ET': '🇪🇹', 'FK': '🇫🇰', 'FO': '🇫🇴', 'FJ': '🇫🇯', 'FI': '🇫🇮', 'FR': '🇫🇷', 'GF': '🇬🇫',
+            'PF': '🇵🇫', 'GA': '🇬🇦', 'GM': '🇬🇲', 'GE': '🇬🇪', 'DE': '🇩🇪', 'GH': '🇬🇭', 'GI': '🇬🇮', 'GR': '🇬🇷', 'GL': '🇬🇱', 'GD': '🇬🇩',
+            'GP': '🇬🇵', 'GU': '🇬🇺', 'GT': '🇬🇹', 'GN': '🇬🇳', 'GW': '🇬🇼', 'GY': '🇬🇾', 'HT': '🇭🇹', 'HN': '🇭🇳', 'HK': '🇭🇰', 'HU': '🇭🇺',
+            'IS': '🇮🇸', 'IN': '🇮🇳', 'ID': '🇮🇩', 'IR': '🇮🇷', 'IQ': '🇮🇶', 'IE': '🇮🇪', 'IL': '🇮🇱', 'IT': '🇮🇹', 'JM': '🇯🇲', 'JP': '🇯🇵',
+            'JO': '��', 'KZ': '��', 'KE': '��', 'KI': '��', 'KP': '��', 'KR': '��', 'KW': '��', 'KG': '��', 'LA': '🇱🇦', 'LV': '��',
+            'LB': '��', 'LS': '��', 'LR': '��', 'LY': '��', 'LI': '��', 'LT': '��', 'LU': '��', 'MO': '��', 'MK': '��', 'MG': '�🇬',
+            'MW': '🇲🇼', 'MY': '🇲�', 'MV': '��', 'ML': '�🇱', 'MT': '��', 'MH': '��', 'MQ': '🇲🇶', 'MR': '🇲🇷', 'MU': '🇲🇺', 'YT': '🇾🇹',
+            'MX': '🇲🇽', 'FM': '🇫🇲', 'MD': '🇲🇩', 'MC': '🇲🇨', 'MN': '🇲🇳', 'ME': '🇲🇪', 'MS': '🇲🇸', 'MA': '🇲🇦', 'MZ': '🇲🇿', 'MM': '🇲🇲',
+            'NA': '🇳🇦', 'NR': '🇳🇷', 'NP': '🇳🇵', 'NL': '🇳🇱', 'NC': '🇳🇨', 'NZ': '🇳🇿', 'NI': '🇳🇮', 'NE': '🇳🇪', 'NG': '🇳🇬', 'NU': '🇳🇺',
+            'NF': '🇳🇫', 'MP': '🇲🇵', 'NO': '🇳🇴', 'OM': '🇴🇲', 'PK': '🇵🇰', 'PW': '🇵🇼', 'PS': '🇵🇸', 'PA': '🇵🇦', 'PG': '🇵🇬', 'PY': '🇵🇾',
+            'PE': '🇵🇪', 'PH': '🇵🇭', 'PN': '🇵🇳', 'PL': '🇵🇱', 'PT': '🇵🇹', 'PR': '🇵🇷', 'QA': '🇶🇦', 'RE': '🇷🇪', 'RO': '🇷🇴', 'RU': '🇷🇺',
+            'RW': '🇷🇼', 'BL': '🇧🇱', 'SH': '🇸🇭', 'KN': '🇰🇳', 'LC': '🇱🇨', 'MF': '🇲🇫', 'PM': '🇵🇲', 'VC': '🇻🇨', 'WS': '🇼🇸', 'SM': '🇸🇲',
+            'ST': '🇸🇹', 'SA': '🇸🇦', 'SN': '🇸🇳', 'RS': '🇷🇸', 'SC': '🇸🇨', 'SL': '🇸🇱', 'SG': '🇸🇬', 'SK': '🇸🇰', 'SI': '🇸🇮', 'SB': '🇸🇧',
+            'SO': '🇸🇴', 'ZA': '🇿🇦', 'SS': '🇸🇸', 'ES': '🇪🇸', 'LK': '🇱🇰', 'SD': '🇸�', 'SR': '��', 'SZ': '�🇿', 'SE': '��', 'CH': '��',
+            'SY': '🇸🇾', 'TW': '��', 'TJ': '��', 'TZ': '��', 'TH': '��', 'TL': '��', 'TG': '🇹🇬', 'TK': '��', 'TO': '��', 'TT': '��',
+            'TN': '�🇳', 'TR': '�🇷', 'TM': '🇹🇲', 'TC': '🇹🇨', 'TV': '��', 'UG': '�🇬', 'UA': '🇺🇦', 'AE': '🇦🇪', 'GB': '🇬🇧', 'US': '🇺🇸',
+            'UY': '��', 'UZ': '��', 'VU': '��', 'VE': '�🇪', 'VN': '🇻🇳', 'VG': '��', 'VI': '🇻🇮', 'WF': '🇼🇫', 'EH': '🇪🇭', 'YE': '🇾🇪',
+            'ZM': '🇿🇲', 'ZW': '🇿🇼'
+        };
+        
+        // Get flag for country
+        const flag = countryFlags[countryCode] || '🌍';
+        const displayName = countryName;
+        
+        // Create enhanced feedback element
+        const $feedback = $('<div class="country-feedback">' +
+            '<span class="country-flag-large">' + flag + '</span> ' +
+            '<span>Shipping to: <strong>' + displayName + '</strong></span>' +
+            '</div>');
+        
+        // Add feedback after the country field
+        $('#id_country').closest('.enhanced-form-group').after($feedback);
+        
+        // Animate the feedback
+        $feedback.slideDown(300);
+        
+        // Auto-remove after 4 seconds
+        setTimeout(function() {
+            $feedback.slideUp(300, function() {
+                $(this).remove();
+            });
+        }, 4000);
+    }
+    
+    // Animate summary items on scroll
+    $(window).on('scroll', function() {
+        $('.summary-item').each(function() {
+            const $item = $(this);
+            const itemTop = $item.offset().top;
+            const scrollTop = $(window).scrollTop();
+            const windowHeight = $(window).height();
+            
+            if (scrollTop + windowHeight > itemTop + 100) {
+                $item.addClass('animate');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+/* Enhanced Checkout Styles */
+.enhanced-checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+/* Progress Indicator */
+.checkout-header {
+    margin-bottom: 40px;
+}
+
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border: 3px solid #e9ecef;
+}
+
+.progress-step.active .step-circle {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.progress-step.current .step-circle {
+    animation: pulse 2s infinite;
+}
+
+.step-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    text-align: center;
+}
+
+.progress-step.active .step-label {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.progress-line {
+    width: 100px;
+    height: 3px;
+    background: #e9ecef;
+    margin: 0 20px;
+    position: relative;
+    top: -20px;
+}
+
+.progress-line.active {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+/* Form Container */
+.shipping-form-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.form-header .header-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.form-header .header-icon i {
+    color: white;
+    font-size: 24px;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 5px 0;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.form-subtitle {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Enhanced Messages */
+.enhanced-messages {
+    margin-bottom: 30px;
+}
+
+.message-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.message-item.error {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.1) 100%);
+    border-left: 4px solid #e74c3c;
+}
+
+.message-item.success {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.1) 100%);
+    border-left: 4px solid #27ae60;
+}
+
+.message-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+.message-item.error .message-icon {
+    color: #e74c3c;
+}
+
+.message-item.success .message-icon {
+    color: #27ae60;
+}
+
+.message-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+.message-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.message-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.section-title i {
+    margin-right: 12px;
+    color: #667eea;
+    font-size: 18px;
+}
+
+.section-content {
+    background: rgba(102, 126, 234, 0.02);
+    border-radius: 16px;
+    padding: 25px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+/* Enhanced Form Groups */
+.enhanced-form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.enhanced-form-group .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.enhanced-form-group .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+}
+
+.enhanced-form-group.filled .form-control {
+    border-color: #28a745;
+}
+
+.enhanced-form-group.invalid .form-control {
+    border-color: #dc3545;
+}
+
+.enhanced-form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Payment Method Styles */
+.payment-methods-container {
+    position: relative;
+}
+
+.payment-methods-container .form-group {
+    margin-bottom: 0;
+}
+
+.payment-methods-container input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.payment-methods-container label {
+    display: flex;
+    align-items: center;
+    padding: 20px 25px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    position: relative;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.payment-methods-container label:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.payment-methods-container input[type="radio"]:checked + label {
+    border-color: #667eea;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.payment-methods-container input[type="radio"]:checked + label::before {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background: #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-methods-container input[type="radio"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Payment method specific icons */
+.payment-methods-container label[for="id_payment_method_0"]::before {
+    content: '💳';
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.payment-methods-container label[for="id_payment_method_1"]::before {
+    content: '🅿️';
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+/* Payment Fields Styles */
+.payment-fields {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    background: rgba(102, 126, 234, 0.02);
+    animation: slideInUp 0.3s ease-out;
+}
+
+.payment-method-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+    font-size: 18px;
+    font-weight: 600;
+    color: #667eea;
+}
+
+.payment-method-header i {
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+/* Card Payment Specific */
+.card-payment-fields {
+    border-color: rgba(25, 118, 210, 0.2);
+    background: rgba(25, 118, 210, 0.02);
+}
+
+.card-payment-fields .payment-method-header {
+    color: #1976d2;
+    border-bottom-color: rgba(25, 118, 210, 0.1);
+}
+
+#card_number {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    font-size: 16px;
+}
+
+#card_expiry, #card_cvv {
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+}
+
+/* PayPal Payment Specific */
+.paypal-payment-fields {
+    border-color: rgba(0, 112, 186, 0.2);
+    background: rgba(0, 112, 186, 0.02);
+}
+
+.paypal-payment-fields .payment-method-header {
+    color: #0070ba;
+    border-bottom-color: rgba(0, 112, 186, 0.1);
+}
+
+.paypal-instructions {
+    margin-bottom: 25px;
+}
+
+.paypal-instructions .alert {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(0, 123, 255, 0.1) 100%);
+    border: 1px solid rgba(23, 162, 184, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0;
+    color: #333;
+}
+
+.paypal-instructions .alert i {
+    color: #17a2b8;
+    margin-right: 8px;
+}
+
+.paypal-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.paypal-pay-btn {
+    background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0, 112, 186, 0.3);
+}
+
+.paypal-pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 112, 186, 0.4);
+}
+
+.paypal-pay-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Enhanced PayPal Payment Styles */
+.paypal-payment-container {
+    background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+    border-radius: 16px;
+    padding: 30px;
+    margin: 20px 0;
+    border: 2px solid #e3f2fd;
+    position: relative;
+    overflow: hidden;
+}
+
+.paypal-payment-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0070ba 0%, #00457c 50%, #003087 100%);
+}
+
+.paypal-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e7ff;
+}
+
+.paypal-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.paypal-logo i {
+    font-size: 32px;
+    color: #0070ba;
+}
+
+.paypal-logo span {
+    font-size: 28px;
+    font-weight: bold;
+    color: #003087;
+    font-family: 'Arial', sans-serif;
+    letter-spacing: -1px;
+}
+
+.paypal-tagline {
+    color: #64748b;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.paypal-benefits {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px 0;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.benefit-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+    padding: 15px 10px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.benefit-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(0, 112, 186, 0.15);
+}
+
+.benefit-item i {
+    font-size: 24px;
+    color: #0070ba;
+    margin-bottom: 8px;
+}
+
+.benefit-item span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.paypal-instructions {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    border-left: 4px solid #0070ba;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.paypal-instructions h6 {
+    color: #0070ba;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.paypal-steps {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.paypal-steps li {
+    color: #64748b;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.paypal-payment-breakdown {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    border-left: 4px solid #10b981;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.paypal-payment-breakdown h6 {
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.breakdown-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.breakdown-item:last-child {
+    border-bottom: none;
+}
+
+.breakdown-total {
+    border-top: 2px solid #e2e8f0;
+    padding-top: 12px;
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #1e293b;
+}
+
+.breakdown-label {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.breakdown-value {
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.breakdown-total .breakdown-value {
+    color: #10b981;
+    font-size: 16px;
+}
+
+.paypal-button-wrapper {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.enhanced-paypal-btn {
+    background: linear-gradient(135deg, #0070ba 0%, #003087 100%);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    box-shadow: 0 8px 25px rgba(0, 112, 186, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 280px;
+}
+
+.enhanced-paypal-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.enhanced-paypal-btn:hover::before {
+    left: 100%;
+}
+
+.enhanced-paypal-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 112, 186, 0.4);
+}
+
+.enhanced-paypal-btn:active {
+    transform: translateY(-1px);
+}
+
+.enhanced-paypal-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-content i {
+    font-size: 20px;
+}
+
+.btn-security {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.btn-security i {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.paypal-footer-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.security-badge,
+.sandbox-notice {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.security-badge i,
+.sandbox-notice i {
+    color: #0070ba;
+}
+
+@media (max-width: 768px) {
+    .paypal-benefits {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .benefit-item {
+        flex-direction: row;
+        text-align: left;
+        gap: 15px;
+    }
+    
+    .enhanced-paypal-btn {
+        min-width: auto;
+        width: 100%;
+        padding: 16px 30px;
+    }
+    
+    .paypal-footer-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Payment method selected states */
+.payment-method-selected {
+    border-left: 4px solid #667eea;
+    padding-left: 21px;
+    background: rgba(102, 126, 234, 0.02);
+}
+
+.card-payment-payment {
+    border-left-color: #1976d2;
+}
+
+.paypal-payment {
+    border-left-color: #0070ba;
+}
+
+/* Animation for payment fields */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Country Field with Flags */
+.country-select-enhanced {
+    cursor: pointer;
+    position: relative;
+    font-weight: 500;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 45px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.country-select-enhanced:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Flag emoji styling for select options */
+.country-select-enhanced option {
+    padding: 12px 15px;
+    font-size: 16px;
+    background: white;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.country-select-enhanced option:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #333;
+}
+
+.country-select-enhanced option:checked,
+.country-select-enhanced option:selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Enhanced country field when selected */
+.country-select-enhanced[data-selected]:not([data-selected=""]) {
+    color: #667eea;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+}
+
+/* Default placeholder styling */
+.country-select-enhanced[value=""] {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Country Flag Display Enhancement */
+.country-flag-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.country-flag {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+/* Custom dropdown enhancement for better flag visibility */
+.enhanced-form-group select.country-select-enhanced {
+    padding-left: 50px;
+    background-position-x: right 12px, left 15px;
+    background-size: 16px 12px, 24px 18px;
+}
+
+/* Flag positioning in selected value */
+.country-selected-flag {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4em;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Country Dropdown Enhancement - Simple and clean */
+#id_country {
+    cursor: pointer;
+    position: relative;
+    font-weight: 500;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 45px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+#id_country:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+#id_country.country-selected {
+    border-color: #667eea;
+    background-color: rgba(102, 126, 234, 0.05);
+    font-weight: 600;
+    color: #333;
+}
+
+/* Country select options styling - Clean and simple */
+#id_country option {
+    padding: 12px 15px;
+    font-size: 16px;
+    background: white;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#id_country option:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #333;
+}
+
+#id_country option:checked,
+#id_country option:selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Default placeholder styling */
+#id_country[value=""] {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Country Selection Feedback */
+.country-feedback {
+    display: none;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+    animation: slideInFade 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.country-feedback i {
+    color: #667eea;
+    margin-right: 8px;
+}
+
+.country-feedback strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.country-flag-large {
+    font-size: 1.5em;
+    margin-right: 8px;
+}
+
+/* Flag positioning and styling */
+.country-selected-flag {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4em;
+    z-index: 2;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced select with flag space */
+.enhanced-form-group:has(.country-selected-flag) .form-control {
+    padding-left: 50px;
+}
+
+/* Enhanced select styling for better visibility */
+.enhanced-form-group select.form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 45px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.enhanced-form-group select.form-control:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+@keyframes slideInFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Submit Button */
+.form-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.enhanced-submit-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    width: 100%;
+    max-width: 400px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.enhanced-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+}
+
+.enhanced-submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.enhanced-submit-btn.loading {
+    background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    cursor: not-allowed;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.security-info {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.security-info i {
+    margin-right: 8px;
+    color: #28a745;
+}
+
+/* Order Summary */
+.order-summary-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 30px;
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.summary-header .header-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.summary-header .header-icon i {
+    color: white;
+    font-size: 20px;
+}
+
+.summary-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.summary-content {
+    margin-bottom: 25px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.item-label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #555;
+}
+
+.item-label i {
+    margin-right: 8px;
+    color: #667eea;
+    font-size: 14px;
+}
+
+.item-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.summary-divider {
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    margin: 20px 0;
+    border-radius: 1px;
+}
+
+.total-item {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 12px;
+    padding: 20px 15px;
+    margin: 20px 0;
+    border: none;
+}
+
+.total-item .item-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.total-amount {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+/* Guarantee Badge */
+.guarantee-badge {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(34, 139, 34, 0.1) 100%);
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 4px solid #28a745;
+}
+
+.guarantee-badge i {
+    font-size: 24px;
+    color: #28a745;
+    margin-right: 12px;
+}
+
+.badge-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.badge-subtitle {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .enhanced-checkout-container {
+        padding: 20px 10px;
+    }
+    
+    .shipping-form-container {
+        padding: 25px 20px;
+    }
+    
+    .order-summary-container {
+        margin-top: 30px;
+        position: relative;
+        top: auto;
+    }
+    
+    .progress-line {
+        width: 60px;
+        margin: 0 10px;
+    }
+    
+    .form-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .form-header .header-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* PayPal Button Styling */
+.paypal-pay-btn {
+    background: linear-gradient(135deg, #0070ba 0%, #005ea5 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 112, 186, 0.3);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.paypal-pay-btn:hover {
+    background: linear-gradient(135deg, #005ea5 0%, #004a87 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 112, 186, 0.4);
+}
+
+.paypal-pay-btn:active {
+    transform: translateY(0);
+}
+
+.paypal-pay-btn:disabled {
+    background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.paypal-pay-btn i {
+    font-size: 18px;
+}
+
+.paypal-info {
+    text-align: center;
+}
+
+/* PayPal Modal Styling */
+#paypalModal .modal-dialog {
+    max-width: 800px;
+}
+
+#paypalModal .modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+#paypalModal .modal-header {
+    background: linear-gradient(135deg, #0070ba 0%, #005ea5 100%);
+    border-bottom: none;
+    padding: 20px 30px;
+}
+
+#paypalModal .modal-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+#paypalModal .close {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+#paypalModal .close:hover {
+    opacity: 1;
+}
+
+.paypal-iframe-container {
+    position: relative;
+    min-height: 600px;
+}
+
+.paypal-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.paypal-loading .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.paypal-loading p {
+    color: #666;
+    font-size: 16px;
+    margin-top: 1rem;
+}
+
+#paypalFrame {
+    border: none;
+    border-radius: 0 0 15px 15px;
+}
+
+/* PayPal Modal Responsive */
+@media (max-width: 768px) {
+    #paypalModal .modal-dialog {
+        max-width: 95%;
+        margin: 10px auto;
+    }
+    
+    #paypalModal .modal-header {
+        padding: 15px 20px;
+    }
+    
+    #paypalModal .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .paypal-iframe-container {
+        min-height: 500px;
+    }
+    
+    #paypalFrame {
+        height: 500px;
+    }
+}
+
+/* PayPal Instructions Enhancement */
+.paypal-payment-fields .alert-info {
+    background: linear-gradient(135deg, rgba(0, 112, 186, 0.1) 0%, rgba(0, 94, 165, 0.1) 100%);
+    border: 1px solid rgba(0, 112, 186, 0.2);
+    border-left: 4px solid #0070ba;
+    color: #004a87;
+}
+
+.paypal-payment-fields .alert-info i {
+    color: #0070ba;
+}
+
+/* Hide browser payment method notifications and autofill suggestions */
+input[data-payment-disabled="true"]::-webkit-contacts-auto-fill-button,
+input[data-payment-disabled="true"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    height: 0;
+    width: 0;
+    margin: 0;
+}
+
+/* Hide payment method notifications */
+.payment-fields input::-webkit-credentials-auto-fill-button,
+.payment-fields input::-webkit-contacts-auto-fill-button {
+    display: none !important;
+}
+
+/* Disable autofill background color */
+.payment-fields input:-webkit-autofill,
+.payment-fields input:-webkit-autofill:hover,
+.payment-fields input:-webkit-autofill:focus,
+.payment-fields input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #333 !important;
+}
+</style>
+{% endblock %}

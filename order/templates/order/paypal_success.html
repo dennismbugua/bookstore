@@ -1,0 +1,78 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block container %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fa fa-check-circle"></i>
+                        Payment Successful!
+                    </h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="success-icon mb-4">
+                        <i class="fa fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="mb-3">Thank you for your purchase!</h5>
+                    <p class="lead">Your PayPal payment has been processed successfully.</p>
+                    
+                    <div class="order-summary mt-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6>Order Details</h6>
+                                <p><strong>Order #:</strong> {{ order.id }}</p>
+                                <p><strong>Amount Paid:</strong> ${{ order.payable }}</p>
+                                <p><strong>Payment Method:</strong> PayPal</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="badge badge-success">Paid</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-muted">
+                            <i class="fa fa-envelope"></i>
+                            A confirmation email has been sent to {{ order.email }}
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'order:order_details' order.id %}" class="btn btn-primary">
+                        <i class="fa fa-eye"></i> View Order Details
+                    </a>
+                    <a href="{% url 'store:books' %}" class="btn btn-outline-primary ml-2">
+                        <i class="fa fa-shopping-cart"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.success-icon {
+    animation: bounceIn 1s ease-in-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+</style>
+{% endblock %}

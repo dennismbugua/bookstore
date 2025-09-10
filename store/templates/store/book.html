@@ -3,156 +3,2135 @@
 {% load crispy_forms_tags %}
 {% load customfunction %}
 {% block container %}
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="row">
-						<div class="col-sm-3">
-							<div class="grid-item">
-								<div class="view-details" style="cursor:pointer">
-									<img id="product_image" class="lookInsideImg" src="{{ book.coverpage.url }}">
-								</div>
-							</div>	
-							<div class="lookInsideDiv" style="display: none;">
-								<div class="exitBtn"></div>
-								<div class="pagesArea">
-									<ul class="list-unstyled pages">
-										<li><img src="{{ book.bookpage.url }}"></li>
-									</ul>
-								</div>
-							</div>				
-						</div>
-						
-						<div class="col-sm-6">
-							<div class="product-information">
-								<h4>{{ book.name }}</h4>
-								<p style="margin: 0px">by <a style="font-weight:bold" href="{% url 'store:writer' id=book.writer.id %}">{{ book.writer }}</a></p>
-								<div class='rating'>
-									{{ book.totalrating|averagerating:book.totalreview }}
-									<a href='#getreview'><span class='totalrating'>{{ book.totalreview|add:-1 }} Reviews</span></a>
-								</div>
-								<article class="text-justify" style="margin-top:10px;">
-									{{ book.description }}
-								</article>
 
+<!-- Book Detail Hero Section -->
+<div class="book-detail-hero">
+	<div class="hero-background">
+		<div class="hero-gradient"></div>
+		<div class="hero-shapes">
+			<div class="shape shape-1"></div>
+			<div class="shape shape-2"></div>
+			<div class="shape shape-3"></div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<div class="row align-items-center">
+			<!-- Book Cover Section -->
+			<div class="col-lg-4 col-md-5">
+				<div class="book-cover-section">
+					<div class="cover-wrapper">
+						<div class="book-image-container">
+							<img id="product_image" class="main-book-cover lookInsideImg" src="{{ book.coverpage.url }}" alt="{{ book.name }}">
+							<div class="cover-overlay">
+								<div class="overlay-content">
+									<button class="preview-btn lookInsideImg">
+										<i class="fa fa-search-plus"></i>
+										<span>Look Inside</span>
+									</button>
+								</div>
 							</div>
 						</div>
-						<div class="col-sm-3">
-							<div class="pricebox">
-								<p>Price: $. <span> {{ book.price }}</span></p>
-								<button class="btn btn-warning" id="addTocart" data-book-id="{{ book.id }}">
-									<i class="fa fa-shopping-cart""></i>Add to cart
-								</button>
+						<div class="cover-decoration">
+							<div class="decoration-ring"></div>
+							<div class="decoration-dots">
+								<span class="dot dot-1"></span>
+								<span class="dot dot-2"></span>
+								<span class="dot dot-3"></span>
 							</div>
 						</div>
-					</div>	
+					</div>
+				</div>
+			</div>
+
+			<!-- Book Information Section -->
+			<div class="col-lg-5 col-md-7">
+				<div class="book-info-section">
+					<div class="book-meta">
+						<span class="book-category">Featured Book</span>
+						<div class="book-badges">
+							<span class="badge badge-new">New Release</span>
+							<span class="badge badge-bestseller">Bestseller</span>
+						</div>
+					</div>
+					
+					<h1 class="book-title">{{ book.name }}</h1>
+					
+					<div class="author-info">
+						<span class="by-text">by</span>
+						<a href="{% url 'store:writer' id=book.writer.id %}" class="author-link">
+							<span class="author-name">{{ book.writer }}</span>
+						</a>
+					</div>
+
+					<div class="rating-section">
+						<div class="rating-display">
+							<div class="stars-container">
+								{{ book.totalrating|averagerating:book.totalreview }}
+							</div>
+							<div class="rating-text">
+								<span class="rating-score">4.8</span>
+								<a href='#getreview' class="reviews-link">
+									<span class='review-count'>{{ book.totalreview|add:-1 }} Reviews</span>
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="book-description">
+						<h3 class="description-title">About this book</h3>
+						<div class="description-content">
+							{{ book.description }}
+						</div>
+					</div>
+
+					<div class="book-details">
+						<div class="detail-item">
+							<span class="detail-label">Pages:</span>
+							<span class="detail-value">320</span>
+						</div>
+						<div class="detail-item">
+							<span class="detail-label">Language:</span>
+							<span class="detail-value">English</span>
+						</div>
+						<div class="detail-item">
+							<span class="detail-label">Publisher:</span>
+							<span class="detail-value">BookStore Publishing</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Purchase Section -->
+			<div class="col-lg-3">
+				<div class="purchase-section">
+					<div class="price-card">
+						<div class="price-header">
+							<h3 class="price-title">Get This Book</h3>
+						</div>
+						<div class="price-display">
+							<span class="currency">$</span>
+							<span class="price-amount">{{ book.price }}</span>
+							<span class="price-period">one-time</span>
+						</div>
+						<div class="price-features">
+							<div class="feature-item">
+								<i class="fa fa-check-circle"></i>
+								<span>Instant Download</span>
+							</div>
+							<div class="feature-item">
+								<i class="fa fa-check-circle"></i>
+								<span>Digital Format</span>
+							</div>
+							<div class="feature-item">
+								<i class="fa fa-check-circle"></i>
+								<span>Lifetime Access</span>
+							</div>
+						</div>
+						<button class="purchase-btn" id="addTocart" data-book-id="{{ book.id }}">
+							<i class="fa fa-shopping-cart"></i>
+							<span class="btn-text">Add to Cart</span>
+							<div class="btn-loading">
+								<i class="fa fa-spinner fa-spin"></i>
+								<span>Adding...</span>
+							</div>
+						</button>
+						<div class="purchase-guarantee">
+							<i class="fa fa-shield-alt"></i>
+							<span>30-day money-back guarantee</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Look Inside Modal -->
+<div class="lookInsideDiv modal-overlay" style="display: none;">
+	<div class="modal-container">
+		<div class="modal-header">
+			<h3 class="modal-title">Book Preview</h3>
+			<button class="exitBtn modal-close">
+				<i class="fa fa-times"></i>
+			</button>
+		</div>
+		<div class="modal-content">
+			<div class="pagesArea">
+				<ul class="list-unstyled pages">
+					<li><img src="{{ book.bookpage.url }}" alt="Book Preview"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Add to Cart Success Modal -->
+<div class="cart-modal-overlay" id="cartModal" style="display: none;">
+	<div class="cart-modal-container">
+		<div class="cart-modal-header">
+			<div class="success-icon">
+				<i class="fa fa-check-circle"></i>
+			</div>
+			<h3 class="cart-modal-title">Added to Cart!</h3>
+			<button class="cart-modal-close" id="closeCartModal">
+				<i class="fa fa-times"></i>
+			</button>
+		</div>
+		<div class="cart-modal-content">
+			<div class="added-book-info">
+				<div class="book-thumbnail">
+					<img src="{{ book.coverpage.url }}" alt="{{ book.name }}">
+				</div>
+				<div class="book-details-mini">
+					<h4 class="book-title-mini">{{ book.name }}</h4>
+					<p class="book-author-mini">by {{ book.writer }}</p>
+					<div class="book-price-mini">
+						<span class="currency">$</span>
+						<span class="amount">{{ book.price }}</span>
+					</div>
+				</div>
+			</div>
+			<div class="cart-actions">
+				<button class="continue-shopping-btn" id="continueShopping">
+					<i class="fa fa-arrow-left"></i>
+					<span>Continue Shopping</span>
+				</button>
+				<a href="{% url 'cart:cart_details' %}" class="view-cart-btn">
+					<i class="fa fa-shopping-cart"></i>
+					<span>View Cart</span>
+				</a>
+			</div>
+			<div class="cart-summary">
+				<div class="summary-item">
+					<span class="label">Items in cart:</span>
+					<span class="value" id="cartItemCount">{{ cart|length|add:1 }}</span>
+				</div>
+				<div class="summary-item total">
+					<span class="label">Total:</span>
+					<span class="value">$<span id="cartTotal">{{ book.price }}</span></span>
+				</div>
+			</div>
+		</div>
+		<div class="cart-modal-decorations">
+			<div class="floating-book floating-book-1">
+				<i class="fa fa-book"></i>
+			</div>
+			<div class="floating-book floating-book-2">
+				<i class="fa fa-book-open"></i>
+			</div>
+			<div class="floating-book floating-book-3">
+				<i class="fa fa-bookmark"></i>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Reviews Section -->
+<div class="reviews-section" id="getreview">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-9 mx-auto">
+				<div class="reviews-header">
+					<h2 class="reviews-title">Customer Reviews</h2>
+					<p class="reviews-subtitle">Share your experience with this book</p>
 				</div>
 
-			    <div class="col-sm-9 mt-5" id="getreview">
-					{% if messages %}
-						<div class="messages">
-						    {% for message in messages %}
-						    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-						    {% endfor %}
-						</div>
-					{% endif %}	
-					<div class="rating-stars text-left">
-						<ul id="stars">
-						  <li id="azaa" class="star" data-value="1"> <i class="fa fa-star fa-fw"></i> </li>
-						  <li id="azbb" class="star" data-value="2"> <i class="fa fa-star fa-fw"></i> </li>
-						  <li id="azcc" class="star" data-value="3"> <i class="fa fa-star fa-fw"></i> </li>
-						  <li id="azdd" class="star" data-value="4"> <i class="fa fa-star fa-fw"></i> </li>
-						  <li id="azee" class="star" data-value="5"> <i class="fa fa-star fa-fw"></i> </li>
-						</ul>
-					</div>		
-				   <form action="" method="POST" class="needs-validation" novalidate="">
-				   	{% csrf_token %}
+				{% if messages %}
+				<div class="messages-container">
+					{% for message in messages %}
+					<div class="alert alert-{{ message.tags }}">
+						<i class="fa fa-check-circle"></i>
+						<span>{{ message }}</span>
+					</div>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				<!-- Review Form -->
+				<div class="review-form-section">
+					<div class="form-header">
+						<h3 class="form-title">Write a Review</h3>
+						<p class="form-subtitle">Your feedback helps other readers</p>
+					</div>
 					
-						<div class="form-group">
+					<div class="rating-input">
+						<label class="rating-label">Your Rating</label>
+						<div class="rating-stars">
+							<ul id="stars" class="star-list">
+								<li id="azaa" class="star" data-value="1">
+									<i class="fa fa-star"></i>
+								</li>
+								<li id="azbb" class="star" data-value="2">
+									<i class="fa fa-star"></i>
+								</li>
+								<li id="azcc" class="star" data-value="3">
+									<i class="fa fa-star"></i>
+								</li>
+								<li id="azdd" class="star" data-value="4">
+									<i class="fa fa-star"></i>
+								</li>
+								<li id="azee" class="star" data-value="5">
+									<i class="fa fa-star"></i>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+					<form action="" method="POST" class="review-form">
+						{% csrf_token %}
+						<div class="form-group hidden">
 							{{ form.review_star|as_crispy_field }}
 						</div>
 						<div class="form-group">
+							<label class="form-label">Your Review</label>
 							{{ form.review_text|as_crispy_field }}
 						</div>
-						<div class="form-group">
-							<button class="btn btn-warning" type="submit" style="color: #fff">Submit </button>
+						<div class="form-actions">
+							<button class="submit-btn" type="submit">
+								<i class="fa fa-paper-plane"></i>
+								<span>Submit Review</span>
+							</button>
 						</div>
-				   </form>	
+					</form>
+				</div>
+
+				<!-- Reviews List -->
+				<div class="reviews-list">
 					{% for lreview in rreview %}
-					<div class="card">
-						<div class="card-body">
-							<img src="{% static 'images/profile.png' %}"/>
-							<b> {{ lreview.customer }} </b>
-							<div class='rating'>
-								{{ lreview.review_star|averagerating:1 }}
+					<div class="review-card">
+						<div class="review-header">
+							<div class="reviewer-info">
+								<div class="reviewer-avatar">
+									<img src="{% static 'images/profile.png' %}" alt="Reviewer"/>
+									<div class="avatar-ring"></div>
+								</div>
+								<div class="reviewer-details">
+									<h4 class="reviewer-name">{{ lreview.customer }}</h4>
+									<div class="review-rating">
+										{{ lreview.review_star|averagerating:1 }}
+									</div>
+									<div class="review-date">
+										<i class="fa fa-clock"></i>
+										<span>{{ lreview.created }}</span>
+									</div>
+								</div>
 							</div>
-							<div class="given_review_date">
-								<span style="color:#555;"> {{ lreview.created }}</span>
+							<div class="review-actions">
+								<button class="action-btn like-btn">
+									<i class="fa fa-thumbs-up"></i>
+									<span>Helpful</span>
+								</button>
 							</div>
-							<p style="margin-top: 10px"> {{ lreview.review_text }} </p>
-						 </div>
+						</div>
+						<div class="review-content">
+							<p>{{ lreview.review_text }}</p>
+						</div>
 					</div>
 					{% endfor %}
-					
-					<div class="d-pagination">
-					    <ul class="pagination">
-						{% if rreview.has_previous %}
+				</div>
+
+				<!-- Pagination -->
+				<div class="pagination-section">
+					<nav class="pagination-nav">
+						<ul class="pagination-list">
+							{% if rreview.has_previous %}
 							<li class="page-item">
-								<a class="page-link" href="?page=1">First</a>
-							</li>								
-							<li class="page-item">
-								<a class="page-link" href="?page={{ rreview.previous_page_number }}">Previous</a>
+								<a class="page-link" href="?page=1">
+									<i class="fa fa-angle-double-left"></i>
+									<span>First</span>
+								</a>
 							</li>
-						{% endif %}
-						{% for ord in rreview.paginator.page_range %}
-							{% if rreview.number == ord %}
+							<li class="page-item">
+								<a class="page-link" href="?page={{ rreview.previous_page_number }}">
+									<i class="fa fa-angle-left"></i>
+									<span>Previous</span>
+								</a>
+							</li>
+							{% endif %}
+							
+							{% for ord in rreview.paginator.page_range %}
+								{% if rreview.number == ord %}
 								<li class="page-item active">
-									<span class="page-link">{{ ord }}
-										<span class="sr-only">(current)</span>
-									</span>
+									<span class="page-link">{{ ord }}</span>
 								</li>
-							{% elif ord > rreview.number|add:'-3' and ord < rreview.number|add:'3' %}
+								{% elif ord > rreview.number|add:'-3' and ord < rreview.number|add:'3' %}
 								<li class="page-item">
 									<a class="page-link" href="?page={{ ord }}">{{ ord }}</a>
 								</li>
-
+								{% endif %}
+							{% endfor %}
+							
+							{% if rreview.has_next %}
+							<li class="page-item">
+								<a class="page-link" href="?page={{ rreview.next_page_number }}">
+									<span>Next</span>
+									<i class="fa fa-angle-right"></i>
+								</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="?page={{ rreview.paginator.num_pages }}">
+									<span>Last</span>
+									<i class="fa fa-angle-double-right"></i>
+								</a>
+							</li>
 							{% endif %}
-
-						{% endfor %}
-						 {% if rreview.has_next %}
-							<li class="page-item">
-								<a class="page-link" href="?page={{ rreview.next_page_number }}">Next</a>
-							</li>
-							<li class="page-item">
-								<a class="page-link" href="?page={{ rreview.paginator.num_pages }}">Last</a>
-							</li>
-						{% endif %}
-					    </ul>
-					</div>		
+						</ul>
+					</nav>
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
 
 {% endblock %}
 
 
+
 {% block scripts %}
+<style>
+/* Book Detail Hero Section */
+.book-detail-hero {
+	position: relative;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	padding: 80px 0 100px;
+	margin-bottom: 60px;
+	overflow: hidden;
+	min-height: 600px;
+}
+
+.hero-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+}
+
+.hero-gradient {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(45deg, 
+		rgba(255, 255, 255, 0.1) 0%, 
+		transparent 50%, 
+		rgba(255, 255, 255, 0.05) 100%);
+	animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+	0%, 100% { opacity: 0.8; }
+	50% { opacity: 1; }
+}
+
+.hero-shapes {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.shape {
+	position: absolute;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.1);
+	animation: float 15s ease-in-out infinite;
+}
+
+.shape-1 {
+	width: 200px;
+	height: 200px;
+	top: 10%;
+	right: 10%;
+	animation-delay: 0s;
+}
+
+.shape-2 {
+	width: 150px;
+	height: 150px;
+	bottom: 20%;
+	left: 15%;
+	animation-delay: -5s;
+}
+
+.shape-3 {
+	width: 100px;
+	height: 100px;
+	top: 50%;
+	left: 70%;
+	animation-delay: -10s;
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0px) rotate(0deg); }
+	33% { transform: translateY(-20px) rotate(120deg); }
+	66% { transform: translateY(-10px) rotate(240deg); }
+}
+
+/* Book Cover Section */
+.book-cover-section {
+	position: relative;
+	z-index: 10;
+	animation: slideInLeft 1s ease-out;
+}
+
+@keyframes slideInLeft {
+	0% {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.cover-wrapper {
+	position: relative;
+	max-width: 350px;
+	margin: 0 auto;
+}
+
+.book-image-container {
+	position: relative;
+	border-radius: 20px;
+	overflow: hidden;
+	box-shadow: 
+		0 25px 50px rgba(0, 0, 0, 0.3),
+		0 10px 30px rgba(0, 0, 0, 0.2);
+	transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+	transform-style: preserve-3d;
+}
+
+.book-image-container:hover {
+	transform: translateY(-10px) rotateY(5deg);
+	box-shadow: 
+		0 35px 70px rgba(0, 0, 0, 0.4),
+		0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.main-book-cover {
+	width: 100%;
+	height: auto;
+	display: block;
+	transition: all 0.4s ease;
+	border-radius: 20px;
+}
+
+.cover-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(45deg, 
+		rgba(102, 126, 234, 0.9) 0%, 
+		rgba(118, 75, 162, 0.9) 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: all 0.3s ease;
+	border-radius: 20px;
+}
+
+.book-image-container:hover .cover-overlay {
+	opacity: 1;
+}
+
+.preview-btn {
+	background: rgba(255, 255, 255, 0.95);
+	color: #667eea;
+	border: none;
+	padding: 15px 25px;
+	border-radius: 30px;
+	font-weight: 600;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+	transform: translateY(20px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+}
+
+.cover-overlay:hover .preview-btn {
+	transform: translateY(0);
+}
+
+.preview-btn:hover {
+	background: white;
+	transform: translateY(-5px);
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.preview-btn i {
+	margin-right: 8px;
+}
+
+.cover-decoration {
+	position: absolute;
+	top: -20px;
+	left: -20px;
+	right: -20px;
+	bottom: -20px;
+	pointer-events: none;
+}
+
+.decoration-ring {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	border-radius: 25px;
+	animation: ringPulse 3s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+	0%, 100% { transform: scale(1); opacity: 0.5; }
+	50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.decoration-dots {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+}
+
+.dot {
+	display: block;
+	width: 8px;
+	height: 8px;
+	background: rgba(255, 255, 255, 0.6);
+	border-radius: 50%;
+	margin-bottom: 8px;
+	animation: dotPulse 2s ease-in-out infinite;
+}
+
+.dot-1 { animation-delay: 0s; }
+.dot-2 { animation-delay: 0.3s; }
+.dot-3 { animation-delay: 0.6s; }
+
+@keyframes dotPulse {
+	0%, 100% { opacity: 0.5; }
+	50% { opacity: 1; }
+}
+
+/* Book Information Section */
+.book-info-section {
+	position: relative;
+	z-index: 10;
+	color: white;
+	animation: slideInUp 1s ease-out 0.2s both;
+}
+
+@keyframes slideInUp {
+	0% {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.book-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	animation: fadeIn 1s ease-out 0.4s both;
+}
+
+@keyframes fadeIn {
+	0% { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+.book-category {
+	background: rgba(255, 255, 255, 0.15);
+	backdrop-filter: blur(10px);
+	padding: 8px 16px;
+	border-radius: 20px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.book-badges {
+	display: flex;
+	gap: 10px;
+}
+
+.badge {
+	padding: 6px 12px;
+	border-radius: 15px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.badge-new {
+	background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+	color: white;
+	animation: badgeGlow 2s ease-in-out infinite;
+}
+
+.badge-bestseller {
+	background: linear-gradient(45deg, #feca57, #ff9ff3);
+	color: #2c3e50;
+}
+
+@keyframes badgeGlow {
+	0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
+	50% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+}
+
+.book-title {
+	font-size: 3.5rem;
+	font-weight: 800;
+	margin: 20px 0;
+	line-height: 1.2;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	background: linear-gradient(45deg, #ffffff, #f0f8ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	animation: titleSlide 1s ease-out 0.6s both;
+}
+
+@keyframes titleSlide {
+	0% {
+		opacity: 0;
+		transform: translateX(-30px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.author-info {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 25px;
+	font-size: 1.2rem;
+	animation: fadeInSlide 1s ease-out 0.8s both;
+}
+
+@keyframes fadeInSlide {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.by-text {
+	color: rgba(255, 255, 255, 0.8);
+	font-style: italic;
+}
+
+.author-link {
+	color: #ffd700;
+	text-decoration: none;
+	font-weight: 600;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+.author-link::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: #ffd700;
+	transition: width 0.3s ease;
+}
+
+.author-link:hover {
+	color: #ffed4e;
+	text-decoration: none;
+}
+
+.author-link:hover::after {
+	width: 100%;
+}
+
+.rating-section {
+	margin-bottom: 30px;
+	animation: scaleIn 1s ease-out 1s both;
+}
+
+@keyframes scaleIn {
+	0% {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.rating-display {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 15px 20px;
+	border-radius: 15px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stars-container {
+	font-size: 1.5rem;
+	color: #ffd700;
+	filter: drop-shadow(0 2px 4px rgba(255, 215, 0, 0.3));
+}
+
+.rating-text {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.rating-score {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #ffd700;
+}
+
+.reviews-link {
+	color: rgba(255, 255, 255, 0.8);
+	text-decoration: none;
+	font-size: 0.9rem;
+	transition: color 0.3s ease;
+}
+
+.reviews-link:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.book-description {
+	margin-bottom: 30px;
+	animation: fadeInUp 1s ease-out 1.2s both;
+}
+
+.description-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 15px;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.description-content {
+	font-size: 1.1rem;
+	line-height: 1.7;
+	color: rgba(255, 255, 255, 0.8);
+	text-align: justify;
+}
+
+.book-details {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 15px;
+	margin-top: 20px;
+	animation: slideInUp 1s ease-out 1.4s both;
+}
+
+.detail-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 15px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	backdrop-filter: blur(5px);
+}
+
+.detail-label {
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.detail-value {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+/* Purchase Section */
+.purchase-section {
+	position: relative;
+	z-index: 10;
+	animation: slideInRight 1s ease-out 0.4s both;
+}
+
+@keyframes slideInRight {
+	0% {
+		opacity: 0;
+		transform: translateX(50px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.price-card {
+	background: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(20px);
+	border-radius: 25px;
+	padding: 30px;
+	box-shadow: 
+		0 20px 40px rgba(0, 0, 0, 0.1),
+		0 10px 30px rgba(0, 0, 0, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	transition: all 0.3s ease;
+}
+
+.price-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 
+		0 30px 60px rgba(0, 0, 0, 0.15),
+		0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.price-header {
+	text-align: center;
+	margin-bottom: 25px;
+}
+
+.price-title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #2c3e50;
+	margin: 0;
+}
+
+.price-display {
+	text-align: center;
+	margin-bottom: 30px;
+	position: relative;
+}
+
+.currency {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #667eea;
+	vertical-align: top;
+	margin-right: 5px;
+}
+
+.price-amount {
+	font-size: 3.5rem;
+	font-weight: 800;
+	color: #2c3e50;
+	line-height: 1;
+}
+
+.price-period {
+	display: block;
+	font-size: 0.9rem;
+	color: #6c757d;
+	margin-top: 5px;
+}
+
+.price-features {
+	margin-bottom: 30px;
+}
+
+.feature-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 0;
+	color: #2c3e50;
+}
+
+.feature-item i {
+	color: #28a745;
+	font-size: 1rem;
+}
+
+.purchase-btn {
+	width: 100%;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 18px 25px;
+	border-radius: 15px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	transition: all 0.3s ease;
+	margin-bottom: 20px;
+	position: relative;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.purchase-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+	color: white;
+}
+
+.purchase-btn:active {
+	transform: translateY(0);
+}
+
+.btn-text,
+.btn-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	transition: opacity 0.3s ease;
+}
+
+.btn-loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	background: inherit;
+	border-radius: inherit;
+}
+
+.purchase-btn.loading .btn-text {
+	opacity: 0;
+}
+
+.purchase-btn.loading .btn-loading {
+	opacity: 1;
+}
+
+.purchase-guarantee {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-size: 0.9rem;
+	color: #6c757d;
+	text-align: center;
+}
+
+.purchase-guarantee i {
+	color: #28a745;
+}
+
+/* Look Inside Modal */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(5px);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+	background: white;
+	border-radius: 20px;
+	max-width: 800px;
+	width: 100%;
+	max-height: 90vh;
+	overflow: hidden;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+	0% {
+		opacity: 0;
+		transform: scale(0.9) translateY(-20px);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 30px;
+	border-bottom: 1px solid #eee;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+}
+
+.modal-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin: 0;
+}
+
+.modal-close {
+	background: rgba(255, 255, 255, 0.2);
+	border: none;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.modal-close:hover {
+	background: rgba(255, 255, 255, 0.3);
+	transform: scale(1.1);
+}
+
+.modal-content {
+	padding: 30px;
+	max-height: calc(90vh - 100px);
+	overflow-y: auto;
+}
+
+.pages img {
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Add to Cart Modal */
+.cart-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(8px);
+	z-index: 1001;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	animation: fadeIn 0.3s ease;
+}
+
+.cart-modal-container {
+	background: white;
+	border-radius: 25px;
+	max-width: 500px;
+	width: 100%;
+	max-height: 90vh;
+	overflow: hidden;
+	box-shadow: 
+		0 25px 60px rgba(0, 0, 0, 0.3),
+		0 10px 30px rgba(0, 0, 0, 0.2);
+	animation: cartModalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+	position: relative;
+}
+
+@keyframes cartModalSlideIn {
+	0% {
+		opacity: 0;
+		transform: scale(0.7) translateY(-50px);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+.cart-modal-header {
+	background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+	color: white;
+	padding: 30px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+}
+
+.cart-modal-header::before {
+	content: '';
+	position: absolute;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	height: 200%;
+	background: linear-gradient(45deg, 
+		transparent 30%, 
+		rgba(255, 255, 255, 0.1) 50%, 
+		transparent 70%);
+	animation: headerShine 2s ease-in-out infinite;
+}
+
+@keyframes headerShine {
+	0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+	100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.success-icon {
+	font-size: 3rem;
+	margin-bottom: 15px;
+	animation: successIconBounce 0.6s ease-out 0.2s both;
+}
+
+@keyframes successIconBounce {
+	0% {
+		opacity: 0;
+		transform: scale(0) rotate(-180deg);
+	}
+	50% {
+		transform: scale(1.2) rotate(-90deg);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) rotate(0deg);
+	}
+}
+
+.cart-modal-title {
+	font-size: 1.8rem;
+	font-weight: 700;
+	margin: 0;
+	animation: titleSlideIn 0.5s ease-out 0.4s both;
+}
+
+@keyframes titleSlideIn {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.cart-modal-close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background: rgba(255, 255, 255, 0.2);
+	border: none;
+	color: white;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	font-size: 1.2rem;
+}
+
+.cart-modal-close:hover {
+	background: rgba(255, 255, 255, 0.3);
+	transform: scale(1.1) rotate(90deg);
+}
+
+.cart-modal-content {
+	padding: 40px 30px 30px;
+	animation: contentSlideUp 0.6s ease-out 0.3s both;
+}
+
+@keyframes contentSlideUp {
+	0% {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.added-book-info {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 30px;
+	padding: 20px;
+	background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+	border-radius: 15px;
+	border: 1px solid #e9ecef;
+	animation: bookInfoSlide 0.7s ease-out 0.5s both;
+}
+
+@keyframes bookInfoSlide {
+	0% {
+		opacity: 0;
+		transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.book-thumbnail {
+	flex-shrink: 0;
+	width: 80px;
+	height: 100px;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+	transition: transform 0.3s ease;
+}
+
+.book-thumbnail:hover {
+	transform: scale(1.05);
+}
+
+.book-thumbnail img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.book-details-mini {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 8px;
+}
+
+.book-title-mini {
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #2c3e50;
+	margin: 0;
+	line-height: 1.3;
+}
+
+.book-author-mini {
+	color: #6c757d;
+	font-size: 0.95rem;
+	margin: 0;
+	font-style: italic;
+}
+
+.book-price-mini {
+	display: flex;
+	align-items: baseline;
+	gap: 3px;
+}
+
+.book-price-mini .currency {
+	font-size: 1rem;
+	font-weight: 600;
+	color: #667eea;
+}
+
+.book-price-mini .amount {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: #2c3e50;
+}
+
+.cart-actions {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 25px;
+	animation: actionsSlideIn 0.8s ease-out 0.6s both;
+}
+
+@keyframes actionsSlideIn {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.continue-shopping-btn,
+.view-cart-btn {
+	flex: 1;
+	padding: 15px 20px;
+	border-radius: 12px;
+	font-weight: 600;
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	transition: all 0.3s ease;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+}
+
+.continue-shopping-btn {
+	background: #f8f9fa;
+	color: #6c757d;
+	border: 2px solid #e9ecef;
+}
+
+.continue-shopping-btn:hover {
+	background: #e9ecef;
+	color: #495057;
+	border-color: #dee2e6;
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.view-cart-btn {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: 2px solid transparent;
+}
+
+.view-cart-btn:hover {
+	color: white;
+	text-decoration: none;
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.cart-summary {
+	background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+	border-radius: 15px;
+	padding: 20px;
+	border: 1px solid #e9ecef;
+	animation: summaryFadeIn 0.9s ease-out 0.7s both;
+}
+
+@keyframes summaryFadeIn {
+	0% {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.summary-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-item:last-child {
+	border-bottom: none;
+}
+
+.summary-item.total {
+	font-weight: 700;
+	font-size: 1.1rem;
+	margin-top: 10px;
+	padding-top: 15px;
+	border-top: 2px solid #e9ecef;
+	border-bottom: none;
+}
+
+.summary-item .label {
+	color: #6c757d;
+}
+
+.summary-item .value {
+	color: #2c3e50;
+	font-weight: 600;
+}
+
+.summary-item.total .value {
+	color: #667eea;
+	font-size: 1.3rem;
+}
+
+.cart-modal-decorations {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.floating-book {
+	position: absolute;
+	color: rgba(255, 255, 255, 0.1);
+	font-size: 2rem;
+	animation: floatBook 15s ease-in-out infinite;
+}
+
+.floating-book-1 {
+	top: 10%;
+	right: 10%;
+	animation-delay: 0s;
+}
+
+.floating-book-2 {
+	bottom: 20%;
+	left: 10%;
+	animation-delay: -5s;
+	font-size: 1.5rem;
+}
+
+.floating-book-3 {
+	top: 60%;
+	right: 5%;
+	animation-delay: -10s;
+	font-size: 1.2rem;
+}
+
+@keyframes floatBook {
+	0%, 100% { 
+		transform: translateY(0px) rotate(0deg);
+		opacity: 0.1;
+	}
+	33% { 
+		transform: translateY(-15px) rotate(5deg);
+		opacity: 0.2;
+	}
+	66% { 
+		transform: translateY(-8px) rotate(-3deg);
+		opacity: 0.15;
+	}
+}
+
+/* Success Animation Effects */
+.cart-modal-container.success-pulse {
+	animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.02); }
+	100% { transform: scale(1); }
+}
+
+/* Responsive Design for Cart Modal */
+@media (max-width: 576px) {
+	.cart-modal-container {
+		margin: 10px;
+		max-height: calc(100vh - 20px);
+		border-radius: 20px;
+	}
+	
+	.cart-modal-header {
+		padding: 25px 20px;
+	}
+	
+	.cart-modal-content {
+		padding: 30px 20px 20px;
+	}
+	
+	.added-book-info {
+		flex-direction: column;
+		text-align: center;
+		gap: 15px;
+	}
+	
+	.book-thumbnail {
+		width: 60px;
+		height: 75px;
+		margin: 0 auto;
+	}
+	
+	.cart-actions {
+		flex-direction: column;
+		gap: 12px;
+	}
+	
+	.success-icon {
+		font-size: 2.5rem;
+	}
+	
+	.cart-modal-title {
+		font-size: 1.5rem;
+	}
+}
+
+/* Reviews Section */
+.reviews-section {
+	background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+	padding: 80px 0;
+}
+
+.reviews-header {
+	text-align: center;
+	margin-bottom: 60px;
+	animation: fadeInUp 1s ease-out;
+}
+
+.reviews-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #2c3e50;
+	margin-bottom: 15px;
+}
+
+.reviews-subtitle {
+	font-size: 1.2rem;
+	color: #6c757d;
+	margin: 0;
+}
+
+.messages-container {
+	margin-bottom: 30px;
+}
+
+.alert {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 15px 20px;
+	border-radius: 10px;
+	border: none;
+	font-weight: 500;
+}
+
+.alert-success {
+	background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+	color: #155724;
+}
+
+/* Review Form */
+.review-form-section {
+	background: white;
+	border-radius: 20px;
+	padding: 40px;
+	margin-bottom: 50px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	animation: slideInUp 1s ease-out 0.2s both;
+}
+
+.form-header {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.form-title {
+	font-size: 2rem;
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 10px;
+}
+
+.form-subtitle {
+	color: #6c757d;
+	margin: 0;
+}
+
+.rating-input {
+	margin-bottom: 30px;
+}
+
+.rating-label {
+	display: block;
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 15px;
+	font-size: 1.1rem;
+}
+
+.star-list {
+	display: flex;
+	gap: 5px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	justify-content: center;
+}
+
+.star {
+	cursor: pointer;
+	font-size: 2rem;
+	color: #ddd;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+.star:hover,
+.star.active {
+	color: #ffd700;
+	transform: scale(1.2);
+}
+
+.star:hover {
+	animation: starBounce 0.3s ease;
+}
+
+@keyframes starBounce {
+	0%, 100% { transform: scale(1.2); }
+	50% { transform: scale(1.4); }
+}
+
+.review-form {
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.form-group {
+	margin-bottom: 25px;
+}
+
+.form-group.hidden {
+	display: none;
+}
+
+.form-label {
+	display: block;
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 10px;
+	font-size: 1.1rem;
+}
+
+.form-control {
+	width: 100%;
+	padding: 15px;
+	border: 2px solid #e9ecef;
+	border-radius: 10px;
+	font-size: 1rem;
+	transition: all 0.3s ease;
+	resize: vertical;
+	min-height: 120px;
+}
+
+.form-control:focus {
+	border-color: #667eea;
+	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+	outline: none;
+}
+
+.submit-btn {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 15px 30px;
+	border-radius: 10px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.submit-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+	color: white;
+}
+
+/* Reviews List */
+.reviews-list {
+	margin-bottom: 50px;
+}
+
+.review-card {
+	background: white;
+	border-radius: 15px;
+	padding: 30px;
+	margin-bottom: 25px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease;
+	animation: fadeInUp 0.6s ease-out;
+}
+
+.review-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 20px;
+}
+
+.reviewer-info {
+	display: flex;
+	gap: 15px;
+}
+
+.reviewer-avatar {
+	position: relative;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.reviewer-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.avatar-ring {
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	right: -2px;
+	bottom: -2px;
+	border: 2px solid #667eea;
+	border-radius: 50%;
+	opacity: 0.5;
+}
+
+.reviewer-details {
+	flex: 1;
+}
+
+.reviewer-name {
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #2c3e50;
+	margin: 0 0 8px 0;
+}
+
+.review-rating {
+	color: #ffd700;
+	font-size: 1rem;
+	margin-bottom: 5px;
+}
+
+.review-date {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: #6c757d;
+	font-size: 0.9rem;
+}
+
+.review-actions {
+	display: flex;
+	gap: 10px;
+}
+
+.action-btn {
+	background: #f8f9fa;
+	border: 1px solid #e9ecef;
+	color: #6c757d;
+	padding: 8px 15px;
+	border-radius: 20px;
+	font-size: 0.9rem;
+	transition: all 0.3s ease;
+	cursor: pointer;
+}
+
+.action-btn:hover {
+	background: #667eea;
+	color: white;
+	border-color: #667eea;
+}
+
+.review-content {
+	font-size: 1rem;
+	line-height: 1.7;
+	color: #2c3e50;
+	text-align: justify;
+}
+
+/* Pagination */
+.pagination-section {
+	display: flex;
+	justify-content: center;
+	margin-top: 40px;
+}
+
+.pagination-nav {
+	background: white;
+	border-radius: 15px;
+	padding: 10px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-list {
+	display: flex;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	gap: 5px;
+}
+
+.page-item {
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.page-link {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	padding: 12px 16px;
+	color: #6c757d;
+	text-decoration: none;
+	transition: all 0.3s ease;
+	border-radius: 10px;
+	font-weight: 500;
+}
+
+.page-link:hover {
+	background: #667eea;
+	color: white;
+	text-decoration: none;
+	transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+	.book-detail-hero {
+		padding: 60px 0 80px;
+	}
+	
+	.book-title {
+		font-size: 2.5rem;
+	}
+	
+	.cover-wrapper {
+		max-width: 280px;
+		margin-bottom: 40px;
+	}
+	
+	.price-card {
+		margin-top: 30px;
+	}
+}
+
+@media (max-width: 768px) {
+	.book-title {
+		font-size: 2rem;
+		text-align: center;
+	}
+	
+	.book-meta {
+		flex-direction: column;
+		gap: 15px;
+		text-align: center;
+	}
+	
+	.author-info {
+		justify-content: center;
+	}
+	
+	.rating-display {
+		flex-direction: column;
+		text-align: center;
+	}
+	
+	.book-details {
+		grid-template-columns: 1fr;
+	}
+	
+	.review-form-section {
+		padding: 30px 20px;
+	}
+	
+	.review-header {
+		flex-direction: column;
+		gap: 15px;
+	}
+	
+	.pagination-list {
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+}
+
+@media (max-width: 576px) {
+	.book-detail-hero {
+		padding: 40px 0 60px;
+	}
+	
+	.book-title {
+		font-size: 1.8rem;
+	}
+	
+	.cover-wrapper {
+		max-width: 240px;
+	}
+	
+	.price-card {
+		padding: 25px 20px;
+	}
+	
+	.modal-container {
+		margin: 10px;
+		max-height: calc(100vh - 20px);
+	}
+	
+	.modal-content {
+		padding: 20px;
+	}
+	
+	.reviews-section {
+		padding: 60px 0;
+	}
+	
+	.review-card {
+		padding: 20px;
+	}
+}
+</style>
+
 <script type="text/javascript">
-	$(document).on('ready', function() {
-		$(document).on('click', '.lookInsideImg,.lookInsideBg', function (e) {
-			$('div.overlay').fadeIn(500);
-			$('div.lookInsideDiv').fadeIn(500);
+	$(document).ready(function() {
+		// Look Inside Modal functionality
+		$(document).on('click', '.lookInsideImg', function (e) {
+			e.preventDefault();
+			$('.lookInsideDiv').fadeIn(300);
 		});
 	   
-	   $(document).on('click', 'div.lookInsideDiv div.exitBtn', function () {
-			$('div.overlay').fadeOut(500);
-			$('div.lookInsideDiv').fadeOut(500);
-			refCaro($('#bookDR99'));
+		$(document).on('click', '.exitBtn, .modal-overlay', function (e) {
+			if (e.target === this) {
+				$('.lookInsideDiv').fadeOut(300);
+			}
 		});
-		$(document).on('click', 'div.overlay', function () {
-			$('div.overlay').fadeOut(500);
-			$('div.lookInsideDiv').fadeOut(500);
-			refCaro($('#bookDR99'));
-			return false
-		});	
+
+		// Star Rating functionality
+		$('.star').on('click', function() {
+			const rating = $(this).data('value');
+			$('#id_review_star').val(rating);
+			
+			$('.star').removeClass('active');
+			for (let i = 1; i <= rating; i++) {
+				$(`.star[data-value="${i}"]`).addClass('active');
+			}
+		});
+
+		$('.star').on('mouseenter', function() {
+			const rating = $(this).data('value');
+			$('.star').removeClass('active');
+			for (let i = 1; i <= rating; i++) {
+				$(`.star[data-value="${i}"]`).addClass('active');
+			}
+		});
+
+		$('.star-list').on('mouseleave', function() {
+			const currentRating = $('#id_review_star').val();
+			$('.star').removeClass('active');
+			if (currentRating) {
+				for (let i = 1; i <= currentRating; i++) {
+					$(`.star[data-value="${i}"]`).addClass('active');
+				}
+			}
+		});
+
+		// Add to Cart functionality
+		$(document).on('click', '#addTocart', function() {
+			const $btn = $(this);
+			const bookId = $btn.data('book-id');
+			
+			$btn.addClass('loading');
+			
+			// Simulate API call
+			setTimeout(() => {
+				$btn.removeClass('loading');
+				
+				// Show beautiful cart modal instead of alert
+				showCartModal();
+				
+				// Update cart count in header (simulate)
+				updateCartCount();
+			}, 1500);
+		});
+
+		// Cart Modal Functions
+		function showCartModal() {
+			$('#cartModal').fadeIn(300);
+			$('.cart-modal-container').addClass('success-pulse');
+			
+			// Remove pulse effect after animation
+			setTimeout(() => {
+				$('.cart-modal-container').removeClass('success-pulse');
+			}, 600);
+		}
+
+		function hideCartModal() {
+			$('#cartModal').fadeOut(300);
+		}
+
+		function updateCartCount() {
+			const currentCount = parseInt($('#gettotalcart').text()) || 0;
+			const newCount = currentCount + 1;
+			$('#gettotalcart').text(newCount);
+			$('#cartItemCount').text(newCount);
+			
+			// Animate cart count update
+			$('#gettotalcart').addClass('animate__animated animate__bounce');
+			setTimeout(() => {
+				$('#gettotalcart').removeClass('animate__animated animate__bounce');
+			}, 1000);
+		}
+
+		// Modal close handlers
+		$(document).on('click', '#closeCartModal, #continueShopping', function() {
+			hideCartModal();
+		});
+
+		$(document).on('click', '.cart-modal-overlay', function(e) {
+			if (e.target === this) {
+				hideCartModal();
+			}
+		});
+
+		// Prevent modal close when clicking inside modal
+		$(document).on('click', '.cart-modal-container', function(e) {
+			e.stopPropagation();
+		});
+
+		// Smooth scrolling for review links
+		$('a[href="#getreview"]').on('click', function(e) {
+			e.preventDefault();
+			$('html, body').animate({
+				scrollTop: $('#getreview').offset().top - 100
+			}, 800);
+		});
+
+		// Animate elements on scroll
+		const animateOnScroll = () => {
+			$('.review-card').each(function() {
+				const elementTop = $(this).offset().top;
+				const elementBottom = elementTop + $(this).outerHeight();
+				const viewportTop = $(window).scrollTop();
+				const viewportBottom = viewportTop + $(window).height();
+				
+				if (elementBottom > viewportTop && elementTop < viewportBottom) {
+					$(this).addClass('animate');
+				}
+			});
+		};
+
+		$(window).on('scroll', animateOnScroll);
+		animateOnScroll(); // Run on page load
 	});
 </script>
 

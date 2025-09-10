@@ -1,41 +1,1015 @@
 {% load static %}
-<div class="footer">
+<div class="modern-footer">
+	<!-- Footer Background Elements -->
+	<div class="footer-background">
+		<div class="footer-gradient"></div>
+		<div class="footer-shapes">
+			<div class="footer-shape shape-1"></div>
+			<div class="footer-shape shape-2"></div>
+			<div class="footer-shape shape-3"></div>
+			<div class="footer-shape shape-4"></div>
+		</div>
+		<div class="floating-books">
+			<div class="floating-book book-1"><i class="fa fa-book"></i></div>
+			<div class="floating-book book-2"><i class="fa fa-book-open"></i></div>
+			<div class="floating-book book-3"><i class="fa fa-bookmark"></i></div>
+		</div>
+	</div>
+
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-6 col-md-4 col-xs-12 footer_menu">
-				<h3>Contact</h3>
-				<ul>
-					<li class="footer_contact">
-						<i class="fa fa-phone"></i>
-						<p>  +91 6263056779 </p>
-					</li>
-					<li class="footer_contact">
-						<i class="fa fa-envelope"></i>
-						<p> test@gmail.com </p>
-					</li>
-					<li class="footer_contact">
-						<i class="fa fa-map-marker"></i>
-						<p>Bhilai India</p>
-					</li>
-				</ul>
+			<!-- Contact Section -->
+			<div class="col-sm-6 col-md-4 col-xs-12 footer-section">
+				<div class="footer-content contact-section">
+					<div class="section-header">
+						<div class="section-icon">
+							<i class="fa fa-phone"></i>
+						</div>
+						<h3 class="section-title">Get In Touch</h3>
+					</div>
+					<ul class="contact-list">
+						<li class="contact-item" data-animation-delay="0.1s">
+							<div class="contact-icon">
+								<i class="fa fa-envelope"></i>
+							</div>
+							<div class="contact-info">
+								<span class="contact-label">Email</span>
+								<a href="mailto:test@gmail.com" class="contact-value">test@gmail.com</a>
+							</div>
+						</li>
+						<li class="contact-item" data-animation-delay="0.2s">
+							<div class="contact-icon">
+								<i class="fa fa-map-marker"></i>
+							</div>
+							<div class="contact-info">
+								<span class="contact-label">Location</span>
+								<span class="contact-value">Kenya</span>
+							</div>
+						</li>
+						<li class="contact-item" data-animation-delay="0.3s">
+							<div class="contact-icon">
+								<i class="fa fa-clock-o"></i>
+							</div>
+							<div class="contact-info">
+								<span class="contact-label">Hours</span>
+								<span class="contact-value">24/7 Online</span>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
 		 
-			 <div class="col-sm-6 col-md-4 col-xs-12 footer_menu">
-				<h3>Menu</h3>
-				<ul>
-					<li class="footer_menu">
-						<a href="{% url 'store:books' %}"><i class="fa fa-angle-right"></i>Books</a>
-					</li>					
-				</ul>
+			<!-- Navigation Menu Section -->
+			<div class="col-sm-6 col-md-4 col-xs-12 footer-section">
+				<div class="footer-content menu-section">
+					<div class="section-header">
+						<div class="section-icon">
+							<i class="fa fa-compass"></i>
+						</div>
+						<h3 class="section-title">Quick Links</h3>
+					</div>
+					<ul class="footer-menu">
+						<li class="menu-item" data-animation-delay="0.1s">
+							<a href="{% url 'store:books' %}" class="menu-link">
+								<i class="fa fa-book"></i>
+								<span>All Books</span>
+								<div class="link-arrow"><i class="fa fa-arrow-right"></i></div>
+							</a>
+						</li>
+						<li class="menu-item" data-animation-delay="0.2s">
+							<a href="{% url 'store:index' %}" class="menu-link">
+								<i class="fa fa-home"></i>
+								<span>Home</span>
+								<div class="link-arrow"><i class="fa fa-arrow-right"></i></div>
+							</a>
+						</li>
+						<li class="menu-item" data-animation-delay="0.3s">
+							<a href="{% url 'cart:cart_details' %}" class="menu-link">
+								<i class="fa fa-shopping-cart"></i>
+								<span>My Cart</span>
+								<div class="link-arrow"><i class="fa fa-arrow-right"></i></div>
+							</a>
+						</li>
+						<li class="menu-item" data-animation-delay="0.4s">
+							<a href="#" class="menu-link">
+								<i class="fa fa-star"></i>
+								<span>Bestsellers</span>
+								<div class="link-arrow"><i class="fa fa-arrow-right"></i></div>
+							</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 			
-			<div class="col-sm-6 col-md-4 col-xs-12 footer_news">
-				<h3>We accept payment via</h3>
-				<div class="footer_paymentmethod">
-					<img src="{% static 'images/bkash.png' %}" alt="" />
-					<img src="{% static 'images/rocket.png' %}" alt="" />
+			<!-- Payment Methods Section -->
+			<div class="col-sm-6 col-md-4 col-xs-12 footer-section">
+				<div class="footer-content payment-section">
+					<div class="section-header">
+						<div class="section-icon">
+							<i class="fa fa-credit-card"></i>
+						</div>
+						<h3 class="section-title">Payment Methods</h3>
+					</div>
+					<div class="payment-methods">
+						<div class="payment-item" data-animation-delay="0.1s">
+							<div class="payment-icon-wrapper">
+								<i class="fa fa-credit-card payment-icon"></i>
+							</div>
+							<div class="payment-text">Credit Card</div>
+							<div class="payment-overlay">
+								<span>Secure Payment</span>
+							</div>
+						</div>
+						<div class="payment-item" data-animation-delay="0.2s">
+							<div class="payment-icon-wrapper">
+								<i class="fa fa-paypal payment-icon"></i>
+							</div>
+							<div class="payment-text">PayPal</div>
+							<div class="payment-overlay">
+								<span>Fast Transfer</span>
+							</div>
+						</div>
+					</div>
+					<div class="security-badge">
+						<i class="fa fa-shield"></i>
+						<span>100% Secure Payments</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer Bottom -->
+	<div class="footer-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="copyright">
+						<p>&copy; 2025 BookStore. All rights reserved. Made with <i class="fa fa-heart"></i> for book lovers.</p>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="social-links">
+						<a href="#" class="social-link facebook" data-tooltip="Follow us on Facebook">
+							<i class="fa fa-facebook"></i>
+						</a>
+						<a href="#" class="social-link twitter" data-tooltip="Follow us on Twitter">
+							<i class="fa fa-twitter"></i>
+						</a>
+						<a href="#" class="social-link instagram" data-tooltip="Follow us on Instagram">
+							<i class="fa fa-instagram"></i>
+						</a>
+						<a href="#" class="social-link linkedin" data-tooltip="Connect on LinkedIn">
+							<i class="fa fa-linkedin"></i>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<style>
+/* Modern Footer Styling */
+.modern-footer {
+	background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+	color: white;
+	position: relative;
+	margin-top: 80px;
+	padding: 80px 0 0;
+	overflow: hidden;
+	box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer Background Elements */
+.footer-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.footer-gradient {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(45deg, 
+		rgba(102, 126, 234, 0.1) 0%, 
+		transparent 50%, 
+		rgba(118, 75, 162, 0.1) 100%);
+	animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+	0%, 100% { opacity: 0.3; }
+	50% { opacity: 0.6; }
+}
+
+.footer-shapes {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.footer-shape {
+	position: absolute;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.05);
+	animation: floatFooter 20s ease-in-out infinite;
+}
+
+.shape-1 {
+	width: 200px;
+	height: 200px;
+	top: 10%;
+	right: 5%;
+	animation-delay: 0s;
+}
+
+.shape-2 {
+	width: 150px;
+	height: 150px;
+	bottom: 20%;
+	left: 10%;
+	animation-delay: -5s;
+}
+
+.shape-3 {
+	width: 100px;
+	height: 100px;
+	top: 60%;
+	left: 60%;
+	animation-delay: -10s;
+}
+
+.shape-4 {
+	width: 80px;
+	height: 80px;
+	bottom: 40%;
+	right: 20%;
+	animation-delay: -15s;
+}
+
+@keyframes floatFooter {
+	0%, 100% { 
+		transform: translateY(0px) rotate(0deg);
+		opacity: 0.1;
+	}
+	33% { 
+		transform: translateY(-30px) rotate(120deg);
+		opacity: 0.2;
+	}
+	66% { 
+		transform: translateY(-15px) rotate(240deg);
+		opacity: 0.15;
+	}
+}
+
+.floating-books {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.floating-book {
+	position: absolute;
+	color: rgba(255, 255, 255, 0.1);
+	font-size: 2rem;
+	animation: bookFloat 25s ease-in-out infinite;
+}
+
+.book-1 {
+	top: 15%;
+	left: 20%;
+	animation-delay: 0s;
+}
+
+.book-2 {
+	bottom: 30%;
+	right: 15%;
+	animation-delay: -8s;
+	font-size: 1.5rem;
+}
+
+.book-3 {
+	top: 70%;
+	left: 70%;
+	animation-delay: -16s;
+	font-size: 1.2rem;
+}
+
+@keyframes bookFloat {
+	0%, 100% { 
+		transform: translateY(0px) rotate(0deg);
+		opacity: 0.1;
+	}
+	50% { 
+		transform: translateY(-20px) rotate(180deg);
+		opacity: 0.3;
+	}
+}
+
+/* Footer Sections */
+.footer-section {
+	position: relative;
+	z-index: 10;
+	margin-bottom: 40px;
+}
+
+.footer-content {
+	animation: sectionSlideUp 0.8s ease-out;
+	animation-fill-mode: both;
+}
+
+.footer-section:nth-child(1) .footer-content { animation-delay: 0.2s; }
+.footer-section:nth-child(2) .footer-content { animation-delay: 0.4s; }
+.footer-section:nth-child(3) .footer-content { animation-delay: 0.6s; }
+
+@keyframes sectionSlideUp {
+	0% {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Section Headers */
+.section-header {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 30px;
+	padding-bottom: 15px;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+	position: relative;
+}
+
+.section-header::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 50px;
+	height: 2px;
+	background: linear-gradient(90deg, #667eea, #764ba2);
+	animation: lineExpand 2s ease-out;
+}
+
+@keyframes lineExpand {
+	0% { width: 0; }
+	100% { width: 50px; }
+}
+
+.section-icon {
+	width: 50px;
+	height: 50px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	color: white;
+	box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+	animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+	0%, 100% { 
+		transform: scale(1);
+		box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+	}
+	50% { 
+		transform: scale(1.1);
+		box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+	}
+}
+
+.section-title {
+	color: #f8f9fa;
+	font-size: 1.5rem;
+	font-weight: 800;
+	margin: 0;
+	letter-spacing: 0.8px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	text-transform: uppercase;
+	background: linear-gradient(135deg, #ffffff 0%, #e9ecef 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Contact Section */
+.contact-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.contact-item {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 15px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	transition: all 0.3s ease;
+	animation: contactSlideIn 0.6s ease-out;
+	animation-fill-mode: both;
+}
+
+.contact-item:last-child {
+	border-bottom: none;
+}
+
+.contact-item:hover {
+	transform: translateX(10px);
+	background: rgba(255, 255, 255, 0.05);
+	padding-left: 10px;
+	border-radius: 8px;
+}
+
+@keyframes contactSlideIn {
+	0% {
+		opacity: 0;
+		transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.contact-icon {
+	width: 40px;
+	height: 40px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #667eea;
+	font-size: 1.2rem;
+	transition: all 0.3s ease;
+}
+
+.contact-item:hover .contact-icon {
+	background: rgba(102, 126, 234, 0.2);
+	transform: scale(1.1);
+}
+
+.contact-info {
+	flex: 1;
+}
+
+.contact-label {
+	display: block;
+	font-size: 0.9rem;
+	color: rgba(255, 255, 255, 0.6);
+	margin-bottom: 3px;
+}
+
+.contact-value {
+	display: block;
+	font-size: 1rem;
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 500;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.contact-value:hover {
+	color: #667eea;
+	text-decoration: none;
+}
+
+/* Menu Section */
+.footer-menu {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu-item {
+	margin-bottom: 8px;
+	animation: menuSlideIn 0.6s ease-out;
+	animation-fill-mode: both;
+}
+
+@keyframes menuSlideIn {
+	0% {
+		opacity: 0;
+		transform: translateX(-15px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.menu-link {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 15px;
+	color: rgba(255, 255, 255, 0.8);
+	text-decoration: none;
+	border-radius: 10px;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	position: relative;
+	overflow: hidden;
+}
+
+.menu-link::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+	transition: left 0.5s ease;
+}
+
+.menu-link:hover::before {
+	left: 100%;
+}
+
+.menu-link:hover {
+	color: white;
+	text-decoration: none;
+	background: rgba(102, 126, 234, 0.2);
+	transform: translateX(8px);
+	box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.menu-link i {
+	color: #667eea;
+	font-size: 1.1rem;
+	transition: all 0.3s ease;
+}
+
+.menu-link:hover i {
+	color: white;
+	transform: scale(1.2);
+}
+
+.link-arrow {
+	margin-left: auto;
+	opacity: 0;
+	transform: translateX(-10px);
+	transition: all 0.3s ease;
+	color: #667eea;
+}
+
+.menu-link:hover .link-arrow {
+	opacity: 1;
+	transform: translateX(0);
+	color: white;
+}
+
+/* Payment Section */
+.payment-methods {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 25px;
+	flex-wrap: wrap;
+}
+
+.payment-item {
+	position: relative;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 12px;
+	padding: 25px 20px;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	overflow: hidden;
+	animation: paymentSlideIn 0.6s ease-out;
+	animation-fill-mode: both;
+	flex: 1;
+	min-width: 140px;
+	text-align: center;
+	border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes paymentSlideIn {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.payment-item:hover {
+	background: rgba(255, 255, 255, 0.15);
+	transform: translateY(-5px);
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	border-color: rgba(102, 126, 234, 0.5);
+}
+
+.payment-icon-wrapper {
+	width: 50px;
+	height: 50px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 15px;
+	transition: all 0.3s ease;
+	box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.payment-icon {
+	font-size: 1.8rem;
+	color: white;
+	transition: all 0.3s ease;
+}
+
+.payment-item:hover .payment-icon-wrapper {
+	transform: scale(1.1) rotate(5deg);
+	box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+}
+
+.payment-item:hover .payment-icon {
+	transform: scale(1.2);
+}
+
+.payment-text {
+	font-size: 1rem;
+	font-weight: 600;
+	color: rgba(255, 255, 255, 0.9);
+	margin-bottom: 10px;
+	transition: all 0.3s ease;
+}
+
+.payment-item:hover .payment-text {
+	color: white;
+	transform: translateY(-2px);
+}
+
+.payment-logo {
+	width: 100%;
+	height: auto;
+	max-height: 40px;
+	object-fit: contain;
+	transition: all 0.3s ease;
+	filter: brightness(0.9);
+}
+
+.payment-item:hover .payment-logo {
+	filter: brightness(1.1);
+	transform: scale(1.05);
+}
+
+.payment-overlay {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(102, 126, 234, 0.9);
+	color: white;
+	padding: 8px;
+	text-align: center;
+	font-size: 0.8rem;
+	transform: translateY(100%);
+	transition: transform 0.3s ease;
+}
+
+.payment-item:hover .payment-overlay {
+	transform: translateY(0);
+}
+
+.security-badge {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: rgba(40, 167, 69, 0.2);
+	padding: 12px 15px;
+	border-radius: 8px;
+	border: 1px solid rgba(40, 167, 69, 0.3);
+	animation: securityPulse 3s ease-in-out infinite;
+}
+
+@keyframes securityPulse {
+	0%, 100% { 
+		box-shadow: 0 0 0 rgba(40, 167, 69, 0.3);
+	}
+	50% { 
+		box-shadow: 0 0 0 8px rgba(40, 167, 69, 0.1);
+	}
+}
+
+.security-badge i {
+	color: #28a745;
+	font-size: 1.2rem;
+}
+
+.security-badge span {
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+	background: rgba(0, 0, 0, 0.2);
+	margin-top: 60px;
+	padding: 30px 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	animation: bottomSlideUp 1s ease-out 0.8s both;
+}
+
+@keyframes bottomSlideUp {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.copyright {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.copyright p {
+	margin: 0;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 0.9rem;
+}
+
+.copyright .fa-heart {
+	color: #e74c3c;
+	animation: heartBeat 2s ease-in-out infinite;
+	margin: 0 5px;
+}
+
+@keyframes heartBeat {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.2); }
+}
+
+.social-links {
+	display: flex;
+	justify-content: flex-end;
+	gap: 15px;
+	align-items: center;
+}
+
+.social-link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	color: white;
+	text-decoration: none;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	position: relative;
+	overflow: hidden;
+}
+
+.social-link::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 50%;
+	transform: scale(0);
+	transition: transform 0.3s ease;
+}
+
+.social-link.facebook {
+	background: rgba(59, 89, 152, 0.2);
+	border: 2px solid rgba(59, 89, 152, 0.3);
+}
+
+.social-link.facebook::before {
+	background: #3b5998;
+}
+
+.social-link.twitter {
+	background: rgba(29, 161, 242, 0.2);
+	border: 2px solid rgba(29, 161, 242, 0.3);
+}
+
+.social-link.twitter::before {
+	background: #1da1f2;
+}
+
+.social-link.instagram {
+	background: rgba(225, 48, 108, 0.2);
+	border: 2px solid rgba(225, 48, 108, 0.3);
+}
+
+.social-link.instagram::before {
+	background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.social-link.linkedin {
+	background: rgba(0, 119, 181, 0.2);
+	border: 2px solid rgba(0, 119, 181, 0.3);
+}
+
+.social-link.linkedin::before {
+	background: #0077b5;
+}
+
+.social-link:hover::before {
+	transform: scale(1);
+}
+
+.social-link:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.social-link i {
+	position: relative;
+	z-index: 2;
+	font-size: 1.2rem;
+	transition: transform 0.3s ease;
+}
+
+.social-link:hover i {
+	transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.modern-footer {
+		padding: 60px 0 0;
+		margin-top: 60px;
+	}
+	
+	.section-header {
+		flex-direction: column;
+		text-align: center;
+		gap: 10px;
+	}
+	
+	.footer-bottom {
+		text-align: center;
+	}
+	
+	.copyright,
+	.social-links {
+		justify-content: center;
+		margin-bottom: 15px;
+	}
+	
+	.payment-methods {
+		justify-content: center;
+	}
+	
+	.contact-item:hover {
+		transform: none;
+		padding-left: 0;
+	}
+	
+	.menu-link:hover {
+		transform: none;
+	}
+}
+
+@media (max-width: 576px) {
+	.modern-footer {
+		padding: 40px 0 0;
+	}
+	
+	.section-icon {
+		width: 40px;
+		height: 40px;
+		font-size: 1.2rem;
+	}
+	
+	.section-title {
+		font-size: 1.2rem;
+	}
+	
+	.payment-methods {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.payment-item {
+		max-width: 200px;
+	}
+	
+	.social-links {
+		gap: 10px;
+	}
+	
+	.social-link {
+		width: 40px;
+		height: 40px;
+	}
+}
+
+/* Animation delays for staggered effects */
+.contact-item:nth-child(1) { animation-delay: 0.1s; }
+.contact-item:nth-child(2) { animation-delay: 0.2s; }
+.contact-item:nth-child(3) { animation-delay: 0.3s; }
+
+.menu-item:nth-child(1) { animation-delay: 0.1s; }
+.menu-item:nth-child(2) { animation-delay: 0.2s; }
+.menu-item:nth-child(3) { animation-delay: 0.3s; }
+.menu-item:nth-child(4) { animation-delay: 0.4s; }
+
+.payment-item:nth-child(1) { animation-delay: 0.1s; }
+.payment-item:nth-child(2) { animation-delay: 0.2s; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	// Add scroll-triggered animations
+	const observerOptions = {
+		threshold: 0.1,
+		rootMargin: '0px 0px -50px 0px'
+	};
+	
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				entry.target.style.animationPlayState = 'running';
+			}
+		});
+	}, observerOptions);
+	
+	// Observe footer sections
+	document.querySelectorAll('.footer-section').forEach(section => {
+		observer.observe(section);
+	});
+	
+	// Add dynamic animation delays
+	document.querySelectorAll('[data-animation-delay]').forEach((element, index) => {
+		const delay = element.getAttribute('data-animation-delay');
+		element.style.animationDelay = delay;
+	});
+	
+	// Add tooltip functionality for social links
+	document.querySelectorAll('[data-tooltip]').forEach(element => {
+		element.addEventListener('mouseenter', function() {
+			const tooltip = this.getAttribute('data-tooltip');
+			console.log(tooltip); // You can implement actual tooltip display here
+		});
+	});
+	
+	// Add ripple effect to clickable elements
+	document.querySelectorAll('.menu-link, .social-link, .payment-item').forEach(element => {
+		element.addEventListener('click', function(e) {
+			const ripple = document.createElement('div');
+			const rect = this.getBoundingClientRect();
+			const size = Math.max(rect.width, rect.height);
+			const x = e.clientX - rect.left - size / 2;
+			const y = e.clientY - rect.top - size / 2;
+			
+			ripple.style.position = 'absolute';
+			ripple.style.width = ripple.style.height = size + 'px';
+			ripple.style.left = x + 'px';
+			ripple.style.top = y + 'px';
+			ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+			ripple.style.borderRadius = '50%';
+			ripple.style.transform = 'scale(0)';
+			ripple.style.animation = 'ripple 0.6s linear';
+			ripple.style.pointerEvents = 'none';
+			
+			this.appendChild(ripple);
+			
+			setTimeout(() => {
+				ripple.remove();
+			}, 600);
+		});
+	});
+	
+	// Add CSS for ripple animation
+	const style = document.createElement('style');
+	style.textContent = `
+		@keyframes ripple {
+			to {
+				transform: scale(2);
+				opacity: 0;
+			}
+		}
+	`;
+	document.head.appendChild(style);
+});
+</script>

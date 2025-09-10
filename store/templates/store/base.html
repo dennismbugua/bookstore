@@ -10,7 +10,60 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/responsive.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/slick.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/slick-theme.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/skdslider.css' %}"> 
+	<link rel="stylesheet" type="text/css" href="{% static 'css/skdslider.css' %}">
+	<!-- AOS (Animate On Scroll) Library -->
+	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> 
+	
+	<!-- Sticky Sidebar Styles -->
+	<style>
+		.sticky-sidebar {
+			position: sticky;
+			top: 20px;
+			height: fit-content;
+			max-height: calc(100vh - 40px);
+			overflow-y: auto;
+			z-index: 100;
+			transition: all 0.3s ease;
+		}
+		
+		/* Custom scrollbar for sidebar */
+		.sticky-sidebar::-webkit-scrollbar {
+			width: 6px;
+		}
+		
+		.sticky-sidebar::-webkit-scrollbar-track {
+			background: #f1f1f1;
+			border-radius: 3px;
+		}
+		
+		.sticky-sidebar::-webkit-scrollbar-thumb {
+			background: linear-gradient(135deg, #667eea, #764ba2);
+			border-radius: 3px;
+		}
+		
+		.sticky-sidebar::-webkit-scrollbar-thumb:hover {
+			background: linear-gradient(135deg, #5a67d8, #6b46c1);
+		}
+		
+		/* Responsive behavior */
+		@media (max-width: 767px) {
+			.sticky-sidebar {
+				position: relative;
+				top: auto;
+				height: auto;
+				max-height: none;
+				overflow-y: visible;
+			}
+		}
+		
+		/* Enhanced sidebar shadow on scroll */
+		.sticky-sidebar.scrolled {
+			box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+			border-radius: 0 15px 15px 0;
+			background: rgba(255, 255, 255, 0.95);
+			backdrop-filter: blur(10px);
+		}
+	</style> 
 </head>
 <body>
 <div class="pre_loader gray_bg text-center">
@@ -20,11 +73,11 @@
 </div>
 {% include 'store/bin/header.html' %}
 
-{% block headermenu %} {% endblock %}
+<!-- {% block headermenu %} {% endblock %} -->
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-2">
+		<div class="col-sm-2 sticky-sidebar">
 			{% include 'store/bin/sidebar.html' %}
 		</div>
 		<div class="col-sm-10">
@@ -43,7 +96,76 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js" type="text/javascript"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Readmore.js/2.2.1/readmore.js" type="text/javascript"></script>
 <script src="https://www.google-analytics.com/analytics.js" type="text/javascript"></script>
-<script src="{% static 'js/main.js' %}"></script> 
+<script src="{% static 'js/main.js' %}"></script>
+<!-- AOS (Animate On Scroll) Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 100
+  });
+  
+  // Enhanced sticky sidebar behavior
+  document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sticky-sidebar');
+    const header = document.querySelector('header') || document.querySelector('.header');
+    
+    if (sidebar) {
+      // Adjust sticky top position based on header height
+      function adjustStickyPosition() {
+        const headerHeight = header ? header.offsetHeight : 0;
+        sidebar.style.top = (headerHeight + 20) + 'px';
+        sidebar.style.maxHeight = `calc(100vh - ${headerHeight + 40}px)`;
+      }
+      
+      // Initial adjustment
+      adjustStickyPosition();
+      
+      // Adjust on window resize
+      window.addEventListener('resize', adjustStickyPosition);
+      
+      // Add scroll effect
+      let scrollTimeout;
+      window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        
+        if (window.scrollY > 100) {
+          sidebar.classList.add('scrolled');
+        } else {
+          sidebar.classList.remove('scrolled');
+        }
+        
+        // Smooth scroll handling
+        scrollTimeout = setTimeout(function() {
+          // Optional: Add any additional scroll-based animations here
+        }, 150);
+      });
+      
+      // Smooth scroll for sidebar links
+      const sidebarLinks = sidebar.querySelectorAll('a[href^="#"]');
+      sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href').substring(1);
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            e.preventDefault();
+            const headerOffset = header ? header.offsetHeight + 20 : 20;
+            const elementPosition = targetElement.offsetTop;
+            const offsetPosition = elementPosition - headerOffset;
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    }
+  });
+</script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

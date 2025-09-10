@@ -1,8 +1,266 @@
 {% load customfunction %}
-<ul class="list-group">
-	<li class="list-group-item d-flex justify-content-between align-items-center"><h4>Checkout Summary</h4></li>
-	<li class="list-group-item d-flex justify-content-between align-items-center">Books<span>{{ cart|length }}</span></li>
-	<li class="list-group-item d-flex justify-content-between align-items-center">Subtotal<span>{{ cart.get_total_price }} $.</span></li>
-	<li class="list-group-item d-flex justify-content-between align-items-center">Shipping<span>{{ cost|shipping }} $.</span></li>
-	<li class="list-group-item d-flex justify-content-between align-items-center">Payable Total<span>{{ cart.get_total_price|payabletotal}} $.</span></li>
-</ul>	
+
+<style>
+/* Modern Summary Styles */
+.summary-container {
+    animation: fadeInUp 0.6s ease;
+}
+
+.summary-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
+    margin: -2rem -2rem 1.5rem -2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.summary-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.15"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+}
+
+.summary-header h4 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    filter: brightness(1.1) contrast(1.2);
+}
+
+.summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.summary-item {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.summary-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.summary-item:hover::before {
+    transform: scaleY(1);
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.summary-value {
+    font-weight: 700;
+    color: #38a169;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #38a169, #48bb78);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.summary-total {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-total::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.summary-total:hover::before {
+    transform: translateX(100%);
+}
+
+.summary-total .summary-label,
+.summary-total .summary-value {
+    color: white !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    background-clip: unset !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.summary-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    font-size: 10px;
+    margin-right: 8px;
+}
+
+.summary-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+    margin: 1rem 0;
+    border: none;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Staggered animation delays */
+.summary-item:nth-child(1) { animation: slideInRight 0.6s ease 0.1s both; }
+.summary-item:nth-child(2) { animation: slideInRight 0.6s ease 0.2s both; }
+.summary-item:nth-child(3) { animation: slideInRight 0.6s ease 0.3s both; }
+.summary-item:nth-child(4) { animation: slideInRight 0.6s ease 0.4s both; }
+.summary-item:nth-child(5) { animation: slideInRight 0.6s ease 0.5s both; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .summary-header {
+        margin: -1.5rem -1.5rem 1rem -1.5rem;
+        padding: 1.2rem;
+    }
+    
+    .summary-item {
+        padding: 1rem 1.2rem;
+    }
+    
+    .summary-total {
+        padding: 1.2rem;
+    }
+}
+</style>
+
+<div class="summary-container">
+    <!-- Summary Header -->
+    <div class="summary-header">
+        <h4>
+            <i class="fa fa-clipboard-list" style="margin-right: 10px; font-size: 1.3em; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);"></i>
+            <span style="text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);">Checkout Summary</span>
+        </h4>
+    </div>
+
+    <!-- Summary Items -->
+    <ul class="summary-list">
+        <li class="summary-item">
+            <span class="summary-label">
+                <span class="summary-icon">
+                    <i class="fa fa-book"></i>
+                </span>
+                Books
+            </span>
+            <span class="summary-value">{{ cart|length }}</span>
+        </li>
+        
+        <li class="summary-item">
+            <span class="summary-label">
+                <span class="summary-icon">
+                    <i class="fa fa-calculator"></i>
+                </span>
+                Subtotal
+            </span>
+            <span class="summary-value">${{ cart.get_total_price }}</span>
+        </li>
+        
+        <!-- <li class="summary-item">
+            <span class="summary-label">
+                <span class="summary-icon">
+                    <i class="fa fa-truck"></i>
+                </span>
+                Shipping
+            </span>
+            <span class="summary-value">${{ cost|shipping }}</span>
+        </li> -->
+        
+        <hr class="summary-divider">
+        
+        <li class="summary-item summary-total">
+            <span class="summary-label">
+                <i class="fa fa-credit-card" style="margin-right: 8px;"></i>
+                Payable Total
+            </span>
+            <span class="summary-value">${{ cart.get_total_price|payabletotal }}</span>
+        </li>
+    </ul>
+</div>	

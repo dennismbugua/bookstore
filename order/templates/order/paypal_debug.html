@@ -1,0 +1,71 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block container %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fa fa-bug"></i>
+                        PayPal Debug Information
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h5>Form Data Being Sent to PayPal:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Field Name</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in form_fields.items %}
+                                <tr>
+                                    <td><code>{{ key }}</code></td>
+                                    <td>{{ value }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h5 class="mt-4">PayPal URLs:</h5>
+                    <ul>
+                        <li><strong>Action URL:</strong> {{ paypal_action_url }}</li>
+                        <li><strong>Return URL:</strong> {{ form_fields.return }}</li>
+                        <li><strong>Cancel URL:</strong> {{ form_fields.cancel_return }}</li>
+                        <li><strong>IPN URL:</strong> {{ form_fields.notify_url }}</li>
+                    </ul>
+                    
+                    <div class="alert alert-warning mt-4">
+                        <h6>Troubleshooting Tips:</h6>
+                        <ul class="mb-0">
+                            <li>Make sure you're using a <strong>Personal/Buyer account</strong> to pay</li>
+                            <li>The business email <code>{{ form_fields.business }}</code> should be different from your buyer account</li>
+                            <li>If you see "logging into seller account" error, log out and use a different PayPal account</li>
+                            <li>Create sandbox accounts at <a href="https://developer.paypal.com/developer/accounts/" target="_blank">PayPal Developer</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <form action="{{ paypal_action_url }}" method="post" target="_top">
+                            {% for key, value in form_fields.items %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                            {% endfor %}
+                            <input type="submit" value="Proceed to PayPal" class="btn btn-primary btn-lg">
+                        </form>
+                        
+                        <a href="{% url 'order:order_create' %}" class="btn btn-secondary btn-lg ml-3">
+                            Back to Checkout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

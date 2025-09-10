@@ -1,48 +1,568 @@
 {% load static %}
-<div class="header-top">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-3">
-				<div class="pull-left">
-					<a href="{% url 'store:index' %}"><img src="{% static 'images/logo/logo.png' %}" alt="" /></a>
-				</div>
-			</div>
-			<div class="col-sm-5">
-				<form action="{% url 'search:search' %}" method="GET">
-					<div class="input-group search_box">
-						<input type="text" class="form-control" placeholder="Search Book" name="q" value="{{search}}">
-						<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
-					</div>
-				</form>
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					<ul class="navbar-nav">
-						{% if request.user.is_authenticated %}
-					    <li class="dropdown profile"><a href="#">{{ request.user.username }}</a>
-					        <ul role="menu" class="sub-menu">
-					            <li><a href="{% url 'order:order_list' %}"><i class="fa fa-shopping-cart"></i> My order</a></li>
-					            <li><a href="{% url 'store:signout' %}"><i class="fa fa-sign-out"></i> Sing Out</a></li>
-					        </ul> 
-					    </li>
-					    <li class="cart">
-					    	<a href="{% url 'cart:cart_details' %}">Cart <i class="fa fa-angle-left"></i>
-					    		<span class="totalcart" id="gettotalcart"> {{ cart|length }} </span> 
-					    		<i class="fa fa-angle-right"></i>
-					    	</a>
-					    </li>
-					    {% else %}
-					    <li class="profile"><a href="{% url 'store:signin' %}">Sign In</a></li>
-					    <li class="cart">
-					    	<a href="{% url 'cart:cart_details' %}">Cart <i class="fa fa-angle-left"></i>
-					    		<span class="totalcart" id="gettotalcart"> {{ cart|length }} </span> 
-					    		<i class="fa fa-angle-right"></i>
-					    	</a>
-					    </li>
-					    {% endif %}
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+
+<style>
+/* Modern Header Styles */
+.modern-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    animation: headerSlideIn 0.8s ease-out;
+}
+
+.modern-header.scrolled {
+    background: rgba(102, 126, 234, 0.95);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes headerSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Logo Styles */
+.logo-container {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+    transform: scale(1.05);
+}
+
+.logo-container img {
+    height: 50px;
+    width: auto;
+    transition: all 0.3s ease;
+    filter: brightness(1.1) contrast(1.1);
+}
+
+/* Search Bar Styles */
+.search-container {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 2rem;
+    position: relative;
+}
+
+.modern-search {
+    display: flex;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    padding: 4px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modern-search:focus-within {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.modern-search input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 20px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    border-radius: 50px;
+}
+
+.modern-search input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 300;
+}
+
+.modern-search button {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+}
+
+.modern-search button:hover {
+    background: linear-gradient(135deg, #ff5252, #ff7043);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Navigation Styles */
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-item {
+    position: relative;
+    list-style: none;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    color: white;
+    text-decoration: none;
+}
+
+/* Cart Badge */
+.cart-badge {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 10px 0;
+    margin-top: 10px;
+    min-width: 200px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 0;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* Mobile Menu */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 9999;
+    padding: 2rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-nav.active {
+    display: block;
+    transform: translateX(0);
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 80px 0 0 0;
+}
+
+.mobile-nav-item {
+    margin: 20px 0;
+}
+
+.mobile-nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    padding: 15px 20px;
+    display: block;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(10px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .search-container {
+        margin: 1rem 0;
+        order: 3;
+        flex-basis: 100%;
+    }
+    
+    .nav-container {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .logo-container img {
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        padding: 0.8rem;
+    }
+    
+    .modern-search {
+        margin: 0.5rem 0;
+    }
+    
+    .modern-search input {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .logo-container img {
+        height: 35px;
+    }
+}
+
+/* Loading Animation */
+.header-loading {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+</style>
+
+<header class="modern-header" id="mainHeader">
+    <div class="header-content">
+        <!-- Logo -->
+        <div class="logo-container">
+            <a href="{% url 'store:index' %}">
+                <img src="{% static 'images/logo/logo.png' %}" alt="Bookstore Logo" />
+            </a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <form action="{% url 'search:search' %}" method="GET" class="modern-search">
+                <input autocomplete="off" type="text" placeholder="Search for books..." name="q" value="{{search}}">
+                <button type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="nav-container">
+            {% if request.user.is_authenticated %}
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link">
+                        <i class="fa fa-user"></i>
+                        {{ request.user.username }}
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'order:order_list' %}" class="dropdown-item">
+                            <i class="fa fa-shopping-cart"></i> My Orders
+                        </a>
+                        <a href="{% url 'store:signout' %}" class="dropdown-item">
+                            <i class="fa fa-sign-out"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="nav-item">
+                    <a href="{% url 'store:signin' %}" class="nav-link">
+                        <i class="fa fa-sign-in"></i>
+                        Sign In
+                    </a>
+                </div>
+            {% endif %}
+            
+            <div class="nav-item">
+                <a href="{% url 'cart:cart_details' %}" class="nav-link">
+                    <i class="fa fa-shopping-cart"></i>
+                    Cart
+                    <span class="cart-badge" id="gettotalcart">{{ cart|length }}</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<!-- Mobile Navigation -->
+<div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" onclick="toggleMobileMenu()">
+        <i class="fa fa-times"></i>
+    </button>
+    
+    <ul class="mobile-nav-list">
+        {% if request.user.is_authenticated %}
+            <li class="mobile-nav-item">
+                <a href="#" class="mobile-nav-link">
+                    <i class="fa fa-user"></i> {{ request.user.username }}
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'order:order_list' %}" class="mobile-nav-link">
+                    <i class="fa fa-shopping-cart"></i> My Orders
+                </a>
+            </li>
+            <li class="mobile-nav-item">
+                <a href="{% url 'store:signout' %}" class="mobile-nav-link">
+                    <i class="fa fa-sign-out"></i> Sign Out
+                </a>
+            </li>
+        {% else %}
+            <li class="mobile-nav-item">
+                <a href="{% url 'store:signin' %}" class="mobile-nav-link">
+                    <i class="fa fa-sign-in"></i> Sign In
+                </a>
+            </li>
+        {% endif %}
+        
+        <li class="mobile-nav-item">
+            <a href="{% url 'cart:cart_details' %}" class="mobile-nav-link">
+                <i class="fa fa-shopping-cart"></i> Cart (<span id="mobileCartCount">{{ cart|length }}</span>)
+            </a>
+        </li>
+    </ul>
 </div>
+
+<script>
+// Header scroll effects
+window.addEventListener('scroll', function() {
+    const header = document.getElementById('mainHeader');
+    if (window.scrollY > 100) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById('mobileNav');
+    mobileNav.classList.toggle('active');
+    document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : 'auto';
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const mobileNav = document.getElementById('mobileNav');
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (!mobileNav.contains(event.target) && !menuToggle.contains(event.target)) {
+        mobileNav.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// Search enhancement
+document.querySelector('.modern-search input').addEventListener('focus', function() {
+    this.parentElement.style.transform = 'translateY(-2px)';
+    this.parentElement.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.15)';
+});
+
+document.querySelector('.modern-search input').addEventListener('blur', function() {
+    if (!this.value) {
+        this.parentElement.style.transform = 'translateY(0)';
+        this.parentElement.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+    }
+});
+
+// Cart update animation
+function updateCartCount(count) {
+    const cartBadges = document.querySelectorAll('#gettotalcart, #mobileCartCount');
+    cartBadges.forEach(badge => {
+        badge.textContent = count;
+        badge.style.animation = 'none';
+        setTimeout(() => {
+            badge.style.animation = 'pulse 0.5s ease';
+        }, 10);
+    });
+}
+
+// Header loading state
+function showHeaderLoading() {
+    document.getElementById('mainHeader').classList.add('header-loading');
+}
+
+function hideHeaderLoading() {
+    document.getElementById('mainHeader').classList.remove('header-loading');
+}
+
+// Intersection Observer for animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+        }
+    });
+}, observerOptions);
+
+// Initialize animations on load
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.getElementById('mainHeader');
+    header.style.animation = 'headerSlideIn 0.8s ease-out';
+    
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+
+// Performance optimization
+let ticking = false;
+function updateHeader() {
+    const header = document.getElementById('mainHeader');
+    if (window.scrollY > 100) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+    ticking = false;
+}
+
+window.addEventListener('scroll', function() {
+    if (!ticking) {
+        requestAnimationFrame(updateHeader);
+        ticking = true;
+    }
+});
+</script>

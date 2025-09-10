@@ -1,0 +1,80 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block container %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        Payment Cancelled
+                    </h4>
+                </div>
+                <div class="card-body text-center">
+                    <div class="cancel-icon mb-4">
+                        <i class="fa fa-times-circle text-warning" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="mb-3">Payment was cancelled</h5>
+                    <p class="lead">Your PayPal payment was cancelled and no charges were made.</p>
+                    
+                    <div class="order-summary mt-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6>Order Details</h6>
+                                <p><strong>Order #:</strong> {{ order.id }}</p>
+                                <p><strong>Amount:</strong> ${{ order.payable }}</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="badge badge-warning">Payment Pending</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            Don't worry! Your order is still saved. You can complete the payment anytime.
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'order:paypal_payment' order.id %}" class="btn btn-primary">
+                        <i class="fab fa-paypal"></i> Try Payment Again
+                    </a>
+                    <a href="{% url 'order:order_create' %}" class="btn btn-outline-secondary ml-2">
+                        <i class="fa fa-arrow-left"></i> Back to Checkout
+                    </a>
+                    <a href="{% url 'store:books' %}" class="btn btn-outline-primary ml-2">
+                        <i class="fa fa-shopping-cart"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cancel-icon {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+}
+</style>
+{% endblock %}

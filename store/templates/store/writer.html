@@ -2,50 +2,275 @@
 {% load static %}
 {% load customfunction %}
 {% block container %}
+		<!-- Writer Profile Section -->
+		<div class="writer-profile-section">
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="row">
-						<div class="col-sm-3">
-							<div class="view-details">
-								<img src="{{ wrt.pic.url }}">
+					<div class="writer-header-card">
+						<div class="row align-items-center">
+							<div class="col-sm-4 col-md-3">
+								<div class="writer-image-container">
+									<div class="writer-image-wrapper">
+										<img src="{{ wrt.pic.url }}" alt="{{ wrt.name }}" class="writer-image">
+										<div class="image-overlay">
+											<div class="writer-badge">
+												<i class="fa fa-pen"></i>
+												<span>Author</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-8 col-md-9">
+								<div class="writer-info-section">
+									<div class="writer-name-container">
+										<h1 class="writer-name">{{ wrt.name }}</h1>
+										<div class="writer-title">Published Author</div>
+									</div>
+									<div class="writer-bio-container">
+										<article class="writer-bio">{{ wrt.bio }}</article>
+									</div>
+									<div class="writer-stats">
+										<div class="stat-item">
+											<div class="stat-number">{{ book|length }}</div>
+											<div class="stat-label">Published Books</div>
+										</div>
+										<div class="stat-divider"></div>
+										<div class="stat-item">
+											<div class="stat-number">4.8</div>
+											<div class="stat-label">Average Rating</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
-						
-						<div class="col-sm-8">
-							<div class="product-information">
-								<h3>{{ wrt.name }}</h3>
-								<article class="text-justify" style="margin-top:10px;">{{ wrt.bio }}</article>
-
-							</div>
-						</div>
-					</div>	
-				</div>
-
-				<div class="col-sm-12">
-					<div class="titleheader">
-						<h3 class="h2header text-center">Published Books</h3>
-					</div>
-					<div class="regulara sliderzx">
-						{% for item in book %}
-						<div class="book-wrapper text-center">
-							<div class="coverpage">
-								<img src="{{ item.coverpage.url }}"/>
-							</div>
-							<a href="{% url 'store:book' id=item.id %}">{{ item.name|text_short }}</a>
-							<a href="{% url 'store:writer' id=item.writer.id %}">{{ item.writer }}</a>
-							<div class="rating">
-								{{ item.totalrating|averagerating:item.totalreview }}
-								<span class="totalrating">{{ item.totalreview|add:-1 }}</span>
-							</div>
-							<p> ${{ item.price }} </p>
-							<button class="btn btn-warning" id="addTocart" data-book-id="{{ item.id }}">
-									<i class="fa fa-shopping-cart""></i>Add to cart
-								</button>
-
-
-						</div>
-						{% endfor %}
 					</div>
 				</div>
 			</div>
+		</div>
+
+		<!-- Published Books Section -->
+		<div class="published-books-section">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="section-header">
+						<div class="section-title-container">
+							<h2 class="section-title">Published Books</h2>
+							<div class="section-subtitle">Discover amazing stories by {{ wrt.name }}</div>
+							<div class="title-decoration">
+								<div class="decoration-line"></div>
+								<div class="decoration-icon">
+									<i class="fa fa-book"></i>
+								</div>
+								<div class="decoration-line"></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="books-grid-container">
+						<div class="books-grid">
+							{% for item in book %}
+							<div class="enhanced-book-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+								<div class="book-card-inner">
+									<div class="book-cover-section">
+										<div class="book-cover-wrapper">
+											<img src="{{ item.coverpage.url }}" alt="{{ item.name }}" class="book-cover-image"/>
+											<div class="book-overlay">
+												<div class="overlay-content">
+													<a href="{% url 'store:book' id=item.id %}" class="quick-view-btn">
+														<i class="fa fa-eye"></i>
+														<span>Quick View</span>
+													</a>
+												</div>
+											</div>
+											<div class="book-badge">
+												<span class="price-tag">${{ item.price }}</span>
+											</div>
+										</div>
+									</div>
+									
+									<div class="book-info-section">
+										<div class="book-title-container">
+											<a href="{% url 'store:book' id=item.id %}" class="book-title">{{ item.name|text_short }}</a>
+										</div>
+										
+										<div class="book-author-container">
+											<a href="{% url 'store:writer' id=item.writer.id %}" class="book-author">by {{ item.writer }}</a>
+										</div>
+										
+										<div class="book-rating-section">
+											<div class="rating-stars">
+												{{ item.totalrating|averagerating:item.totalreview }}
+											</div>
+											<span class="review-count">({{ item.totalreview|add:-1 }} reviews)</span>
+										</div>
+										
+										<div class="book-actions">
+											<button class="enhanced-add-to-cart-btn" data-book-id="{{ item.id }}">
+												<span class="btn-content">
+													<i class="fa fa-shopping-cart"></i>
+													<span class="btn-text">Add to Cart</span>
+												</span>
+												<div class="btn-ripple"></div>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Enhanced Add to Cart functionality
+    $('.enhanced-add-to-cart-btn').on('click', function(e) {
+        e.preventDefault();
+        
+        const $btn = $(this);
+        const bookId = $btn.data('book-id');
+        const $btnText = $btn.find('.btn-text');
+        const originalText = $btnText.text();
+        
+        // Add loading state
+        $btn.addClass('loading');
+        $btnText.text('Adding...');
+        $btn.prop('disabled', true);
+        
+        // Simulate API call (replace with actual AJAX call)
+        setTimeout(function() {
+            // Success state
+            $btn.removeClass('loading').addClass('success');
+            $btnText.text('Added!');
+            
+            // Show success feedback
+            showSuccessMessage('Book added to cart successfully!');
+            
+            // Reset button after 2 seconds
+            setTimeout(function() {
+                $btn.removeClass('success');
+                $btnText.text(originalText);
+                $btn.prop('disabled', false);
+            }, 2000);
+        }, 1000);
+    });
+    
+    // Success message function
+    function showSuccessMessage(message) {
+        const $snackbar = $('#snackbar');
+        $snackbar.text(message)
+                 .addClass('show success')
+                 .removeClass('error');
+        
+        setTimeout(function() {
+            $snackbar.removeClass('show');
+        }, 3000);
+    }
+    
+    // Enhanced hover effects for book cards
+    $('.enhanced-book-card').on('mouseenter', function() {
+        $(this).find('.book-cover-image').addClass('hover-effect');
+    }).on('mouseleave', function() {
+        $(this).find('.book-cover-image').removeClass('hover-effect');
+    });
+    
+    // Stagger animation for book cards
+    $('.enhanced-book-card').each(function(index) {
+        $(this).css('animation-delay', (index * 0.1) + 's');
+    });
+});
+</script>
+
+<style>
+/* Additional CSS for enhanced interactions */
+.enhanced-add-to-cart-btn.loading {
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    cursor: not-allowed;
+}
+
+.enhanced-add-to-cart-btn.success {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.book-cover-image.hover-effect {
+    transform: scale(1.05) rotateY(5deg) rotateX(2deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 25px;
+    padding: 16px 24px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    bottom: 30px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+}
+
+#snackbar.show {
+    visibility: visible;
+    animation: snackbarSlideIn 0.5s ease-out;
+}
+
+#snackbar.success {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+}
+
+#snackbar.error {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+@keyframes snackbarSlideIn {
+    from {
+        bottom: 0;
+        opacity: 0;
+        transform: translateX(-50%) translateY(100%);
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Loading spinner for buttons */
+.enhanced-add-to-cart-btn.loading .btn-content::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
 {% endblock %}
